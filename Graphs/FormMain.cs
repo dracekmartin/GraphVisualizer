@@ -85,6 +85,7 @@ namespace Graphs
                         newVertex.vertexEdges.Add(newEdge);
                         v.vertexEdges.Add(newEdge);
                         edges.Add(newEdge);
+                        
                     }
                 }
                 vertexes.Add(newVertex);
