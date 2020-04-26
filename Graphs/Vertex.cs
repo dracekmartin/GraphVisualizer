@@ -6,17 +6,19 @@ namespace Graphs
 {
     class Vertex : GraphObject
     {
-        public Point position { get; set; }
         public List<Edge> vertexEdges { get; set; }
-        public int radius { get; set; }
         public bool visited { get; set; }
+        public Point position { get; set; }
+        public int radius { get; set; }
+        
 
-        public Vertex(Point init_position, Color init_color, int init_value = int.MaxValue, int init_radius = 5)
+        public Vertex(Point init_position, Color init_color, int init_value = int.MaxValue, int init_text = int.MaxValue, int init_radius = 5)
         {
             position = init_position;
             color = init_color;
             vertexEdges = new List<Edge>();
             value = init_value;
+            text = init_text;
             radius = init_radius;
         }
 
@@ -28,9 +30,9 @@ namespace Graphs
         public void DrawText(Graphics g)
         {
             Brush b = new SolidBrush(color);
-            if (value != int.MaxValue)
+            if (text != int.MaxValue)
             {
-                g.DrawString(value + "", new Font("Verdana", 10), b, position.X + 2, position.Y + 2);
+                g.DrawString(text + "", new Font("Verdana", 10), b, position.X + 2, position.Y + 2);
             }
             else
             {

@@ -12,7 +12,7 @@ namespace Graphs
         public Color textColor { get; set; }
         public int width { get; set; }
 
-        public Edge(Vertex init_start, Vertex init_end, int init_direction, Color init_color, Color init_textColor, int init_value = 1, int init_width = 5)
+        public Edge(Vertex init_start, Vertex init_end, int init_direction, Color init_color, Color init_textColor, int init_value = 1, int init_text = 1, int init_width = 5)
         {
             start = init_start;
             end = init_end;
@@ -20,6 +20,7 @@ namespace Graphs
             color = init_color;
             textColor = init_textColor;
             value = init_value;
+            text = init_text;
             width = init_width;
         }
 
@@ -30,7 +31,6 @@ namespace Graphs
             g.DrawLine(p, start.position, end.position);
 
             AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * width, width);
-            //WIP
             if (direction == 1)
             {
                 p.CustomEndCap = aab;
@@ -49,7 +49,7 @@ namespace Graphs
 
         public void DrawText(Graphics g)
         {
-            g.DrawString(value + "", new Font("Verdana", 10), new SolidBrush(textColor), new Point((start.position.X + end.position.X) / 2, (start.position.Y + end.position.Y) / 2));
+            g.DrawString(text + "", new Font("Verdana", 10), new SolidBrush(textColor), new Point((start.position.X + end.position.X) / 2, (start.position.Y + end.position.Y) / 2));
         }
 
         public bool Clicked(Point click)
