@@ -73,25 +73,25 @@ namespace Graphs
 
             //Spousta objektů
 
-            Random r = new Random();
-            for (int i = 0; i < 32; i++)
-            {
-                Vertex newVertex = new Vertex(new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
-                foreach (Vertex v in vertexes)
-                {
-                    if (r.Next(0, 11) < 4)
-                    {
-                        Edge newEdge = new Edge(newVertex, v, 0, edgeBaseColor, textBaseColor, r.Next(0, 100));
-                        newVertex.vertexEdges.Add(newEdge);
-                        v.vertexEdges.Add(newEdge);
-                        edges.Add(newEdge);
+            //Random r = new Random();
+            //for (int i = 0; i < 128; i++)
+            //{
+            //    Vertex newVertex = new Vertex(new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
+            //    foreach (Vertex v in vertexes)
+            //    {
+            //        if (r.Next(0, 11) < 4)
+            //        {
+            //            Edge newEdge = new Edge(newVertex, v, 0, edgeBaseColor, textBaseColor, r.Next(0, 100));
+            //            newVertex.vertexEdges.Add(newEdge);
+            //            v.vertexEdges.Add(newEdge);
+            //            edges.Add(newEdge);
                         
-                    }
-                }
-                vertexes.Add(newVertex);
-            }
-            Console.WriteLine(edges.Count());
-            Refresh();
+            //        }
+            //    }
+            //    vertexes.Add(newVertex);
+            //}
+            //Console.WriteLine(edges.Count());
+            //Refresh();
 
 
         }
@@ -498,6 +498,8 @@ namespace Graphs
                 }
             }
         }
+
+
 
         //Refresh
         private void refreshCanvas()

@@ -59,6 +59,8 @@
     <Compile Include="MinHeap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Step.cs" />
+    <Compile Include="ValueChangingStep.cs" />
     <Compile Include="Vertex.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>

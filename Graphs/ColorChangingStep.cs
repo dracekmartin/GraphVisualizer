@@ -2,9 +2,8 @@
 
 namespace Graphs
 {
-    class ColorChangingStep
+    class ColorChangingStep : Step
     {
-        public GraphObject go { get; set; }
         public Color color { get; set; }
 
         public ColorChangingStep(GraphObject init_go, Color init_color)
