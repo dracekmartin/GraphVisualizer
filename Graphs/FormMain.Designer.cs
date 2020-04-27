@@ -175,10 +175,11 @@
             this.algorithmSelection.FormattingEnabled = true;
             this.algorithmSelection.Items.AddRange(new object[] {
             "Dijsktra",
-            "Jarník"});
+            "Jarník",
+            "Borůvka"});
             this.algorithmSelection.Location = new System.Drawing.Point(6, 16);
             this.algorithmSelection.Name = "algorithmSelection";
-            this.algorithmSelection.Size = new System.Drawing.Size(131, 30);
+            this.algorithmSelection.Size = new System.Drawing.Size(131, 43);
             this.algorithmSelection.TabIndex = 5;
             // 
             // startAlgButton

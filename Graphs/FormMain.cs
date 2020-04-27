@@ -293,12 +293,9 @@ namespace Graphs
             {
                 foreach (Vertex vertex in vertexes)
                 {
-                    vertex.color = vertexBaseColor;
-                }
-                foreach (Vertex vertex in vertexes)
-                {
                     if (vertex.Clicked(e.Location))
                     {
+                        startingVertex.color = vertexBaseColor;
                         startingVertex = vertex;
                         vertex.color = mediumHiglightColor;
                         break;
@@ -331,6 +328,7 @@ namespace Graphs
                     v.text = int.MaxValue;
                     v.color = vertexBaseColor;
                     v.visited = false;
+                    v.subtreeParent = v;
                 }
                 foreach (Edge edge in edges)
                 {
@@ -349,6 +347,10 @@ namespace Graphs
                 else if (algorithmSelection.SelectedIndex == 1)
                 {
                     Jarnik();
+                }
+                else if (algorithmSelection.SelectedIndex == 2)
+                {
+                    Boruvka();
                 }
             }
             else
@@ -471,6 +473,51 @@ namespace Graphs
                 else
                 {
                     stepQueue.Enqueue(new Step(currentEdge, smallHiglightColor, currentEdge.value));
+                }
+            }
+        }
+
+
+
+        private void Boruvka()
+        {
+            bool changed = false;
+            while (!changed)
+            {
+                changed = true;
+                foreach (Edge e in edges)
+                {
+                    if (e.start.getSubtreeParent() != e.end.getSubtreeParent())
+                    {
+                        changed = false;
+                        if (e.start.getSubtreeParent().smallestSubtreeEdge == null || e.value < e.start.getSubtreeParent().smallestSubtreeEdge.value)
+                        {
+                            e.start.getSubtreeParent().smallestSubtreeEdge = e;
+                        }
+                        if (e.end.getSubtreeParent().smallestSubtreeEdge == null || e.value < e.end.getSubtreeParent().smallestSubtreeEdge.value)
+                        {
+                            e.end.getSubtreeParent().smallestSubtreeEdge = e;
+                        }
+                    }
+                }
+                foreach(Vertex v in vertexes)
+                {
+                    
+                    if (v.getSubtreeParent().smallestSubtreeEdge != null)
+                    {
+                        stepQueue.Enqueue(new Step(v.getSubtreeParent().smallestSubtreeEdge.start, bigHiglightColor, v.getSubtreeParent().smallestSubtreeEdge.start.text));
+                        stepQueue.Enqueue(new Step(v.getSubtreeParent().smallestSubtreeEdge.end, bigHiglightColor, v.getSubtreeParent().smallestSubtreeEdge.end.text));
+                        stepQueue.Enqueue(new Step(v.getSubtreeParent().smallestSubtreeEdge, bigHiglightColor, v.getSubtreeParent().smallestSubtreeEdge.text));
+                        if (v.getSubtreeParent().smallestSubtreeEdge.start.getSubtreeParent().Equals(v.getSubtreeParent()))
+                        {
+                            v.getSubtreeParent().smallestSubtreeEdge.end.getSubtreeParent().subtreeParent = v.getSubtreeParent();
+                        }
+                        else
+                        {
+                            v.getSubtreeParent().smallestSubtreeEdge.start.getSubtreeParent().subtreeParent = v.getSubtreeParent();
+                        }
+                        v.getSubtreeParent().smallestSubtreeEdge = null;
+                    }
                 }
             }
         }

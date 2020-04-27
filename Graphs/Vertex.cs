@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Graphs
 {
@@ -10,7 +10,9 @@ namespace Graphs
         public bool visited { get; set; }
         public Point position { get; set; }
         public int radius { get; set; }
-        
+        public Vertex subtreeParent { get; set; }
+        public Edge smallestSubtreeEdge { get; set; }
+
 
         public Vertex(Point init_position, Color init_color, int init_value = int.MaxValue, int init_text = int.MaxValue, int init_radius = 5)
         {
@@ -20,6 +22,8 @@ namespace Graphs
             value = init_value;
             text = init_text;
             radius = init_radius;
+            subtreeParent = this;
+            smallestSubtreeEdge = null;
         }
 
         public void DrawVertex(Graphics g)
@@ -51,6 +55,19 @@ namespace Graphs
             else
             {
                 return false;
+            }
+        }
+
+        public Vertex getSubtreeParent()
+        {
+            if(subtreeParent == this)
+            {
+                return this;
+            }
+            else
+            {
+                subtreeParent = subtreeParent.getSubtreeParent();
+                return subtreeParent;
             }
         }
     }
