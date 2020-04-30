@@ -6,68 +6,45 @@ namespace Graphs
 {
     class Vertex : GraphObject
     {
-        public List<Edge> vertexEdges { get; set; }
-        public bool visited { get; set; }
-        public Point position { get; set; }
-        public int radius { get; set; }
-        public Vertex subtreeParent { get; set; }
-        public Edge smallestSubtreeEdge { get; set; }
+        public List<Edge> VertexEdges;
+        public bool Visited;
+        public int Radius;
+        public Point Position;
 
-
-        public Vertex(Point init_position, Color init_color, int init_value = int.MaxValue, int init_text = int.MaxValue, int init_radius = 5)
+        public Vertex(Point init_position, Color init_color)
         {
-            position = init_position;
-            color = init_color;
-            vertexEdges = new List<Edge>();
-            value = init_value;
-            text = init_text;
-            radius = init_radius;
-            subtreeParent = this;
-            smallestSubtreeEdge = null;
+            Color = init_color;
+            Value = int.MaxValue;
+            Text = "∞";
+
+            Position = init_position;
+            VertexEdges = new List<Edge>();
+            Radius = 5;
+            Visited = false;
         }
 
         public void DrawVertex(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(color), new Rectangle(position.X - radius, position.Y - radius, 2 * radius, 2 * radius));
+            g.FillEllipse(new SolidBrush(Color), new Rectangle(Position.X - Radius, Position.Y - Radius, 2 * Radius, 2 * Radius));
         }
 
         public void DrawText(Graphics g)
         {
-            Brush b = new SolidBrush(color);
-            if (text != int.MaxValue)
-            {
-                g.DrawString(text + "", new Font("Verdana", 10), b, position.X + 2, position.Y + 2);
-            }
-            else
-            {
-                g.DrawString("∞", new Font("Verdana", 10), b, position.X + 2, position.Y + 2);
-            }
+            Brush b = new SolidBrush(Color);
+            g.DrawString(Text, new Font("Verdana", 10), b, Position.X + 2, Position.Y + 2);
         }
 
         public bool Clicked(Point click)
         {
-            int diffx = position.X - click.X;
-            int diffy = position.Y - click.Y;
-            if (Math.Sqrt(diffx * diffx + diffy * diffy) <= radius)
+            int diffx = Position.X - click.X;
+            int diffy = Position.Y - click.Y;
+            if (Math.Sqrt(diffx * diffx + diffy * diffy) <= Radius)
             {
                 return true;
             }
             else
             {
                 return false;
-            }
-        }
-
-        public Vertex getSubtreeParent()
-        {
-            if(subtreeParent == this)
-            {
-                return this;
-            }
-            else
-            {
-                subtreeParent = subtreeParent.getSubtreeParent();
-                return subtreeParent;
             }
         }
     }

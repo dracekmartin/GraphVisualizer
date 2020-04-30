@@ -20,9 +20,9 @@ namespace Graphs
         private bool HasRightChild(int currentIndex) => GetRightChildIndex(currentIndex) < size;
         private bool IsRoot(int currentIndex) => currentIndex == 0;
 
-        private int GetLeftChild(int currentIndex) => content[GetLeftChildIndex(currentIndex)].value;
-        private int GetRightChild(int currentIndex) => content[GetRightChildIndex(currentIndex)].value;
-        private int GetParent(int currentIndex) => content[GetParentIndex(currentIndex)].value;
+        private int GetLeftChild(int currentIndex) => content[GetLeftChildIndex(currentIndex)].Value;
+        private int GetRightChild(int currentIndex) => content[GetRightChildIndex(currentIndex)].Value;
+        private int GetParent(int currentIndex) => content[GetParentIndex(currentIndex)].Value;
 
         private void Swap(int first, int second)
         {
@@ -38,7 +38,7 @@ namespace Graphs
             {
                 int smallerChildIndex = GetLeftChildIndex(currentIndex);
                 if (HasRightChild(currentIndex) && GetRightChild(currentIndex) < GetLeftChild(currentIndex)) smallerChildIndex = GetRightChildIndex(currentIndex);
-                if (content[smallerChildIndex].value >= content[currentIndex].value) break;
+                if (content[smallerChildIndex].Value >= content[currentIndex].Value) break;
                 Swap(smallerChildIndex, currentIndex);
                 currentIndex = smallerChildIndex;
             }
@@ -47,7 +47,7 @@ namespace Graphs
         private void RecalculateUp()
         {
             int currentIndex = size - 1;
-            while (!(currentIndex == 0) && content[currentIndex].value < GetParent(currentIndex))
+            while (!(currentIndex == 0) && content[currentIndex].Value < GetParent(currentIndex))
             {
                 int parent = GetParentIndex(currentIndex);
                 Swap(currentIndex, parent);
