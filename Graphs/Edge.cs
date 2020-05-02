@@ -4,7 +4,7 @@ using System.Drawing.Drawing2D;
 
 namespace Graphs
 {
-    class Edge : GraphObject
+    public class Edge : GraphObject
     {
         public Vertex Start;
         public Vertex End;

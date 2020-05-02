@@ -20,20 +20,20 @@ namespace Graphs
             new Point(150*3,200*3)
         };
         readonly int[,] defaultMatrix = new int[,] {
-            {0,4,3,5,0,0,0,0},
-            {4,0,0,7,0,0,4,0},
-            {3,0,0,0,7,0,9,0},
-            {5,7,0,0,0,0,0,7},
-            {0,0,7,0,0,0,4,0},
+            {0,17,3,5,0,0,0,0},
+            {17,0,0,8,0,0,4,0},
+            {3,0,0,0,11,0,9,0},
+            {5,8,0,0,0,0,0,7},
+            {0,0,11,0,0,0,2,0},
             {0,0,0,0,0,0,6,0},
-            {0,4,9,0,4,9,0,7},
-            {0,0,0,7,0,0,7,0}
+            {0,4,9,0,2,9,0,23},
+            {0,0,0,7,0,0,23,0}
         };
         //Globální proměnné
         List<Vertex> vertexes = new List<Vertex>();
         List<Edge> edges = new List<Edge>();
+        Step currentStep = null;
         Vertex startingVertex = null;
-        Queue<Step> stepQueue = new Queue<Step>();
         //Globální proměnné barev
         public Color vertexBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
@@ -79,24 +79,24 @@ namespace Graphs
             //Spousta objektů
 
             //Random r = new Random();
-            //for (int i = 0; i < 128; i++)
+            //for (int i = 0; i < 16; i++)
             //{
             //    Vertex newVertex = new Vertex(new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
             //    foreach (Vertex v in vertexes)
             //    {
-            //        if (r.Next(0, 11) < 4)
+            //        if (r.Next(0, 11) < 2)
             //        {
             //            Edge newEdge = new Edge(newVertex, v, 0, edgeBaseColor, textBaseColor, r.Next(0, 100));
-            //            newVertex.vertexEdges.Add(newEdge);
-            //            v.vertexEdges.Add(newEdge);
+            //            newVertex.VertexEdges.Add(newEdge);
+            //            v.VertexEdges.Add(newEdge);
             //            edges.Add(newEdge);
-                        
+
             //        }
             //    }
             //    vertexes.Add(newVertex);
             //}
             //Console.WriteLine(edges.Count());
-            //Refresh();
+            //RefreshCanvas();
 
 
         }
@@ -236,6 +236,8 @@ namespace Graphs
                         break;
                     }
                 }
+                edgeValueInput.Focus();
+                edgeValueInput.SelectAll();
             }
 
             //Změní hodnotu hrany
@@ -325,7 +327,6 @@ namespace Graphs
                 edgeValueInput.Enabled = false;
                 algorithmSelection.Enabled = false;
                 clickFunctionStartingVertex.Enabled = false;
-                startAlgButton.Enabled = false;
                 settingsButton.Enabled = false;
                 pauseButton.Enabled = true;
 
@@ -341,11 +342,6 @@ namespace Graphs
                     edge.Color = edgeBaseColor;
                 }
 
-                t = new Timer();
-                t.Interval = waitTimeInput.Value;
-                t.Tick += new EventHandler(StepWait);
-                t.Enabled = true;
-
                 if (algorithmSelection.SelectedIndex == 0)
                 {
                     Dijkstra();
@@ -358,15 +354,36 @@ namespace Graphs
                 {
                     Boruvka();
                 }
+                else if (algorithmSelection.SelectedIndex == 3)
+                {
+                    Kruskal();
+                }
+
+                while (currentStep.StepBefore != null)
+                {
+                    currentStep = currentStep.StepBefore;
+                }
+
+                t = new Timer();
+                t.Interval = waitTimeInput.Value;
+                t.Tick += new EventHandler(StepWait);
+
+                pauseButton.Text = "Go";
+                stepButton.Enabled = true;
+                backstepButton.Enabled = true;
             }
             else
             {
+                t.Enabled = false;
+                currentStep = null;
                 foreach (Vertex v in vertexes)
                 {
                     v.Value = int.MaxValue;
                     v.Text = "∞";
                     v.Color = vertexBaseColor;
                     v.Visited = false;
+                    v.PartOfSubset = v;
+                    v.ShortestEdge = null;
                 }
                 foreach (Edge edge in edges)
                 {
@@ -375,6 +392,7 @@ namespace Graphs
 
                 RefreshCanvas();
                 startAlgButton.Text = "Start";
+                pauseButton.Text = "Pause";
                 clickFunctionClick.Enabled = true;
                 clickFunctionVertex.Enabled = true;
                 clickFunctionEdge.Enabled = true;
@@ -392,7 +410,7 @@ namespace Graphs
         private void Dijkstra()
         {
             startingVertex.Value = 0;
-            stepQueue.Enqueue(new Step(startingVertex, "0"));
+            NewStep(new Step(startingVertex, "0"));
             for (int count = 0; count < vertexes.Count(); count++)
             {
                 Vertex current = null;
@@ -408,35 +426,35 @@ namespace Graphs
                     }
                 }
                 current.Visited = true;
-                stepQueue.Enqueue(new Step(current, mediumHiglightColor, current.Value + ""));
+                NewStep(new Step(current, mediumHiglightColor, current.Value + ""));
                 foreach (Edge e in current.VertexEdges)
                 {
                     if (e.Start.Equals(current) && e.End.Visited == false)
                     {
-                        stepQueue.Enqueue(new Step(e, smallHiglightColor));
-                        stepQueue.Enqueue(new Step(e.End, smallHiglightColor));
+                        NewStep(new Step(e, smallHiglightColor));
+                        NewStep(new Step(e.End, smallHiglightColor));
                         if (current.Value != int.MaxValue && e.End.Value > e.Value + current.Value)
                         {
                             e.End.Value = e.Value + current.Value;
-                            stepQueue.Enqueue(new Step(e.End, e.End.Value + ""));
+                            NewStep(new Step(e.End, e.End.Value + ""));
                         }
-                        stepQueue.Enqueue(new Step(e.End, vertexBaseColor, e.End.Value + ""));
-                        stepQueue.Enqueue(new Step(e, edgeBaseColor));
+                        NewStep(new Step(e.End, vertexBaseColor, e.End.Value + ""));
+                        NewStep(new Step(e, edgeBaseColor));
                     }
                     else if (e.End.Equals(current) && e.Start.Visited == false)
                     {
-                        stepQueue.Enqueue(new Step(e, smallHiglightColor));
-                        stepQueue.Enqueue(new Step(e.Start, smallHiglightColor));
+                        NewStep(new Step(e, smallHiglightColor));
+                        NewStep(new Step(e.Start, smallHiglightColor));
                         if (current.Value != int.MaxValue && e.Start.Value > e.Value + current.Value)
                         {
                             e.Start.Value = e.Value + current.Value;
-                            stepQueue.Enqueue(new Step(e.Start, e.Start.Value + ""));
+                            NewStep(new Step(e.Start, e.Start.Value + ""));
                         }
-                        stepQueue.Enqueue(new Step(e.Start, vertexBaseColor, e.Start.Value +""));
-                        stepQueue.Enqueue(new Step(e, edgeBaseColor));
+                        NewStep(new Step(e.Start, vertexBaseColor, e.Start.Value +""));
+                        NewStep(new Step(e, edgeBaseColor));
                     }
                 }
-                stepQueue.Enqueue(new Step(current, bigHiglightColor));
+                NewStep(new Step(current, bigHiglightColor));
             }
         }
 
@@ -456,7 +474,7 @@ namespace Graphs
                 Edge currentEdge = edgeHeap.Pop();
                 if (currentEdge.End.Visited == false)
                 {
-                    stepQueue.Enqueue(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
+                    NewStep(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
                     currentEdge.End.Visited = true;
                     foreach (Edge e in currentEdge.End.VertexEdges)
                     {
@@ -468,7 +486,7 @@ namespace Graphs
                 }
                 else if (currentEdge.Start.Visited == false)
                 {
-                    stepQueue.Enqueue(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
+                    NewStep(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
                     currentEdge.Start.Visited = true;
                     foreach (Edge e in currentEdge.Start.VertexEdges)
                     {
@@ -480,7 +498,7 @@ namespace Graphs
                 }
                 else
                 {
-                    stepQueue.Enqueue(new Step(currentEdge, smallHiglightColor, currentEdge.Value + ""));
+                    NewStep(new Step(currentEdge, smallHiglightColor, currentEdge.Value + ""));
                 }
             }
         }
@@ -490,7 +508,78 @@ namespace Graphs
         //Borůvkův algoritmus WIP
         private void Boruvka()
         {
-            
+            int treeCount = vertexes.Count();
+            while(treeCount > 1)
+            {
+                foreach(Edge e in edges)
+                {
+                    if (!(e.Start.PartOfSubset.Equals(e.End.PartOfSubset)))
+                    {
+                        if (e.Start.PartOfSubset.ShortestEdge == null || e.Value < e.Start.PartOfSubset.ShortestEdge.Value)
+                        {
+                            e.Start.PartOfSubset.ShortestEdge = e;
+                        }
+                        if (e.End.PartOfSubset.ShortestEdge == null || e.Value < e.End.PartOfSubset.ShortestEdge.Value)
+                        {
+                            e.End.PartOfSubset.ShortestEdge = e;
+                        }
+                    }
+                }
+                foreach (Vertex v in vertexes)
+                {
+                    if (v.ShortestEdge != null)
+                    {
+                        Console.WriteLine(v.ShortestEdge.Value);
+                    }
+                }
+                Console.WriteLine("");
+                foreach (Vertex v in vertexes)
+                {
+                    if (v.ShortestEdge != null)
+                    {
+                        if (!(v.ShortestEdge.Start.PartOfSubset.Equals(v.ShortestEdge.End.PartOfSubset)))
+                        {
+                            NewStep(new Step(v.ShortestEdge, mediumHiglightColor));
+                            if (v.ShortestEdge.Start.PartOfSubset.Equals(v))
+                            {
+                                v.ShortestEdge.Start.PartOfSubset = v.ShortestEdge.End.PartOfSubset;
+                            }
+                            else
+                            {
+                                v.ShortestEdge.End.PartOfSubset = v.ShortestEdge.Start.PartOfSubset;
+                            }
+                            treeCount--;
+                        }
+                        v.ShortestEdge = null;
+                    }
+                }
+            }
+            foreach (Vertex v in vertexes)
+            {
+                v.PartOfSubset = v;
+            }
+        }
+
+
+
+        private void Kruskal()
+        {
+            EdgeMinHeap edgeHeap = new EdgeMinHeap(edges.Count());
+            foreach(Edge e in edges)
+            {
+                edgeHeap.Add(e);
+            }
+            int treeCount = vertexes.Count();
+            while(treeCount > 1)
+            {
+                Edge currentEdge = edgeHeap.Pop();
+                if (!(currentEdge.Start.PartOfSubset.Equals(currentEdge.End.PartOfSubset)))
+                {
+                    currentEdge.Start.PartOfSubset = currentEdge.End.PartOfSubset;
+                    NewStep(new Step(currentEdge, mediumHiglightColor));
+                    treeCount--;
+                }
+            }
         }
 
 
@@ -516,19 +605,40 @@ namespace Graphs
             RefreshCanvas();
         }
 
+        //New step
+        public void NewStep(Step newStep)
+        {
+            if (currentStep == null)
+            {
+                currentStep = newStep;
+            }
+            else
+            {
+                currentStep.StepAfter = newStep;
+                currentStep.StepAfter.StepBefore = currentStep;
+                currentStep = currentStep.StepAfter;
+            }
+        }
+
         //Krokovač algoritmů
         private void StepWait(object sender, EventArgs e)
         {
-            if (stepQueue.Count() > 0)
+            if (currentStep.StepAfter != null)
             {
-                (stepQueue.Dequeue()).Complete();
+                currentStep.Complete();
+                currentStep = currentStep.StepAfter;
                 RefreshCanvas();
                 t.Interval = waitTimeInput.Value;
             }
             else
             {
+                pauseButton.Text = "Go";
+                backstepButton.Enabled = true;
+                stepButton.Enabled = true;
+
+                currentStep.Complete();
+                RefreshCanvas();
                 t.Enabled = false;
-                startAlgButton.Enabled = true;
             }
         }
 
@@ -594,6 +704,8 @@ namespace Graphs
             }
             else
             {
+                stepButton.Enabled = false;
+                backstepButton.Enabled = false;
                 t.Enabled = true;
                 ((Button)sender).Text = "Pause";
             }
@@ -601,14 +713,36 @@ namespace Graphs
 
         private void stepButton_Click(object sender, EventArgs e)
         {
-            if (stepQueue.Count() > 0)
+            if (currentStep.StepAfter != null)
             {
-                (stepQueue.Dequeue()).Complete();
+                currentStep.Complete();
+                currentStep = currentStep.StepAfter;
                 RefreshCanvas();
             }
             else
             {
-                startAlgButton.Enabled = true;
+                if (!currentStep.Reversed)
+                {
+                    currentStep.Complete();
+                    RefreshCanvas();
+                }
+            }
+        }
+
+        private void backstepButton_Click(object sender, EventArgs e)
+        {
+            if (currentStep.StepBefore != null)
+            {
+                if(currentStep.StepAfter == null && currentStep.Reversed == true)
+                {
+                    currentStep.Complete();
+                }
+                else
+                {
+                    currentStep = currentStep.StepBefore;
+                    currentStep.Complete();
+                }
+                RefreshCanvas();
             }
         }
     }

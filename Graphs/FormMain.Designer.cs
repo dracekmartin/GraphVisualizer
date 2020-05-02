@@ -36,23 +36,23 @@
             this.edgeValueInput = new System.Windows.Forms.MaskedTextBox();
             this.clickFunctionClick = new System.Windows.Forms.ListBox();
             this.groupBoxAlg = new System.Windows.Forms.GroupBox();
+            this.backstepButton = new System.Windows.Forms.Button();
+            this.stepButton = new System.Windows.Forms.Button();
+            this.pauseButton = new System.Windows.Forms.Button();
             this.waitTimeInput = new System.Windows.Forms.TrackBar();
             this.algorithmSelection = new System.Windows.Forms.ListBox();
             this.startAlgButton = new System.Windows.Forms.Button();
             this.clickFunctionStartingVertex = new System.Windows.Forms.ListBox();
+            this.groupBoxOthers = new System.Windows.Forms.GroupBox();
             this.settingsButton = new System.Windows.Forms.Button();
             this.graph = new System.Windows.Forms.PictureBox();
-            this.groupBoxOthers = new System.Windows.Forms.GroupBox();
-            this.pauseButton = new System.Windows.Forms.Button();
-            this.stepButton = new System.Windows.Forms.Button();
-            this.backstepButton = new System.Windows.Forms.Button();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
             this.groupBoxGraphCreation.SuspendLayout();
             this.groupBoxAlg.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.waitTimeInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graph)).BeginInit();
             this.groupBoxOthers.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.graph)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutMain
@@ -167,6 +167,37 @@
             this.groupBoxAlg.TabStop = false;
             this.groupBoxAlg.Text = "Algorithms";
             // 
+            // backstepButton
+            // 
+            this.backstepButton.Location = new System.Drawing.Point(280, 68);
+            this.backstepButton.Name = "backstepButton";
+            this.backstepButton.Size = new System.Drawing.Size(34, 23);
+            this.backstepButton.TabIndex = 11;
+            this.backstepButton.Text = "<-";
+            this.backstepButton.UseVisualStyleBackColor = true;
+            this.backstepButton.Click += new System.EventHandler(this.backstepButton_Click);
+            // 
+            // stepButton
+            // 
+            this.stepButton.Location = new System.Drawing.Point(320, 68);
+            this.stepButton.Name = "stepButton";
+            this.stepButton.Size = new System.Drawing.Size(34, 23);
+            this.stepButton.TabIndex = 10;
+            this.stepButton.Text = "->";
+            this.stepButton.UseVisualStyleBackColor = true;
+            this.stepButton.Click += new System.EventHandler(this.stepButton_Click);
+            // 
+            // pauseButton
+            // 
+            this.pauseButton.AutoSize = true;
+            this.pauseButton.Location = new System.Drawing.Point(280, 45);
+            this.pauseButton.Name = "pauseButton";
+            this.pauseButton.Size = new System.Drawing.Size(75, 23);
+            this.pauseButton.TabIndex = 9;
+            this.pauseButton.Text = "Pause";
+            this.pauseButton.UseVisualStyleBackColor = true;
+            this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+            // 
             // waitTimeInput
             // 
             this.waitTimeInput.AutoSize = false;
@@ -186,10 +217,11 @@
             this.algorithmSelection.Items.AddRange(new object[] {
             "Dijsktra",
             "Jarník",
-            "Borůvka"});
+            "Borůvka",
+            "Kruskal"});
             this.algorithmSelection.Location = new System.Drawing.Point(6, 16);
             this.algorithmSelection.Name = "algorithmSelection";
-            this.algorithmSelection.Size = new System.Drawing.Size(131, 43);
+            this.algorithmSelection.Size = new System.Drawing.Size(131, 56);
             this.algorithmSelection.TabIndex = 5;
             // 
             // startAlgButton
@@ -215,6 +247,16 @@
             this.clickFunctionStartingVertex.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionStartingVertex.Leave += new System.EventHandler(this.ClickFunction_Leave);
             // 
+            // groupBoxOthers
+            // 
+            this.groupBoxOthers.Controls.Add(this.settingsButton);
+            this.groupBoxOthers.Location = new System.Drawing.Point(819, 3);
+            this.groupBoxOthers.Name = "groupBoxOthers";
+            this.groupBoxOthers.Size = new System.Drawing.Size(200, 91);
+            this.groupBoxOthers.TabIndex = 7;
+            this.groupBoxOthers.TabStop = false;
+            this.groupBoxOthers.Text = "Others";
+            // 
             // settingsButton
             // 
             this.settingsButton.Location = new System.Drawing.Point(6, 16);
@@ -236,46 +278,6 @@
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
             this.graph.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseClick);
             // 
-            // groupBoxOthers
-            // 
-            this.groupBoxOthers.Controls.Add(this.settingsButton);
-            this.groupBoxOthers.Location = new System.Drawing.Point(819, 3);
-            this.groupBoxOthers.Name = "groupBoxOthers";
-            this.groupBoxOthers.Size = new System.Drawing.Size(200, 91);
-            this.groupBoxOthers.TabIndex = 7;
-            this.groupBoxOthers.TabStop = false;
-            this.groupBoxOthers.Text = "Others";
-            // 
-            // pauseButton
-            // 
-            this.pauseButton.AutoSize = true;
-            this.pauseButton.Location = new System.Drawing.Point(280, 45);
-            this.pauseButton.Name = "pauseButton";
-            this.pauseButton.Size = new System.Drawing.Size(75, 23);
-            this.pauseButton.TabIndex = 9;
-            this.pauseButton.Text = "Pause";
-            this.pauseButton.UseVisualStyleBackColor = true;
-            this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
-            // 
-            // stepButton
-            // 
-            this.stepButton.Location = new System.Drawing.Point(320, 68);
-            this.stepButton.Name = "stepButton";
-            this.stepButton.Size = new System.Drawing.Size(34, 23);
-            this.stepButton.TabIndex = 10;
-            this.stepButton.Text = "->";
-            this.stepButton.UseVisualStyleBackColor = true;
-            this.stepButton.Click += new System.EventHandler(this.stepButton_Click);
-            // 
-            // backstepButton
-            // 
-            this.backstepButton.Location = new System.Drawing.Point(280, 68);
-            this.backstepButton.Name = "backstepButton";
-            this.backstepButton.Size = new System.Drawing.Size(34, 23);
-            this.backstepButton.TabIndex = 11;
-            this.backstepButton.Text = "<-";
-            this.backstepButton.UseVisualStyleBackColor = true;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -293,8 +295,8 @@
             this.groupBoxAlg.ResumeLayout(false);
             this.groupBoxAlg.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.waitTimeInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graph)).EndInit();
             this.groupBoxOthers.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.graph)).EndInit();
             this.ResumeLayout(false);
 
         }

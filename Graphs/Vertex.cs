@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Graphs
 {
-    class Vertex : GraphObject
+    public class Vertex : GraphObject
     {
         public List<Edge> VertexEdges;
         public bool Visited;
@@ -21,6 +21,9 @@ namespace Graphs
             VertexEdges = new List<Edge>();
             Radius = 5;
             Visited = false;
+
+            PartOfSubset = this;
+            ShortestEdge = null;
         }
 
         public void DrawVertex(Graphics g)
@@ -47,6 +50,28 @@ namespace Graphs
                 return false;
             }
         }
+
+        private Vertex partOfSubset;
+        public Vertex PartOfSubset
+        {
+            get
+            {
+                if (partOfSubset.Equals(this))
+                {
+                    return partOfSubset;
+                }
+                else
+                {
+                    partOfSubset = partOfSubset.PartOfSubset;
+                    return partOfSubset;
+                }
+            }
+            set
+            {
+                partOfSubset = value;
+            }
+        }
+        public Edge ShortestEdge;
     }
 }
 

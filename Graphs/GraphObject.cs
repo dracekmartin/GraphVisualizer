@@ -2,7 +2,7 @@
 
 namespace Graphs
 {
-    class GraphObject
+    public class GraphObject
     {
         public Color Color;
         public int Value;
