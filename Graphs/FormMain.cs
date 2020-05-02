@@ -542,11 +542,11 @@ namespace Graphs
                             NewStep(new Step(v.ShortestEdge, mediumHiglightColor));
                             if (v.ShortestEdge.Start.PartOfSubset.Equals(v))
                             {
-                                v.ShortestEdge.Start.PartOfSubset = v.ShortestEdge.End.PartOfSubset;
+                                v.ShortestEdge.Start.PartOfSubset.PartOfSubset = v.ShortestEdge.End.PartOfSubset;
                             }
                             else
                             {
-                                v.ShortestEdge.End.PartOfSubset = v.ShortestEdge.Start.PartOfSubset;
+                                v.ShortestEdge.End.PartOfSubset.PartOfSubset = v.ShortestEdge.Start.PartOfSubset;
                             }
                             treeCount--;
                         }
@@ -575,7 +575,7 @@ namespace Graphs
                 Edge currentEdge = edgeHeap.Pop();
                 if (!(currentEdge.Start.PartOfSubset.Equals(currentEdge.End.PartOfSubset)))
                 {
-                    currentEdge.Start.PartOfSubset = currentEdge.End.PartOfSubset;
+                    currentEdge.Start.PartOfSubset.PartOfSubset = currentEdge.End.PartOfSubset;
                     NewStep(new Step(currentEdge, mediumHiglightColor));
                     treeCount--;
                 }
