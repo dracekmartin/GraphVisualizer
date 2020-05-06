@@ -8,7 +8,6 @@ namespace Graphs
         FormMain mainForm;
         public FormSettings(FormMain form)
         {
-            
             InitializeComponent();
             mainForm = form;
         }

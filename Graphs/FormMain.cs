@@ -34,6 +34,8 @@ namespace Graphs
         List<Edge> edges = new List<Edge>();
         Step currentStep = null;
         Vertex startingVertex = null;
+        Vertex sinkVertex = null;
+        public bool euclidean = false;
         //Globální proměnné barev
         public Color vertexBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
@@ -50,10 +52,17 @@ namespace Graphs
         public FormMain()
         {
             InitializeComponent();
+            OnStart();
+        }
+
+
+
+        private void OnStart()
+        {
             //Načtení defaultního grafu
             foreach (Point iterPoint in defaultVertexPositions)
             {
-                vertexes.Add(new Vertex(iterPoint, vertexBaseColor));
+                vertexes.Add(new Vertex(this, iterPoint, vertexBaseColor));
             }
             for (int i = 0; i < vertexes.Count(); i++)
             {
@@ -61,7 +70,7 @@ namespace Graphs
                 {
                     if (defaultMatrix[i, k] > 0)
                     {
-                        Edge newEdge = new Edge(vertexes[i], vertexes[k], 0, edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
+                        Edge newEdge = new Edge(this, vertexes[i], vertexes[k], false, edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
                         vertexes[i].VertexEdges.Add(newEdge);
                         vertexes[k].VertexEdges.Add(newEdge);
                         edges.Add(newEdge);
@@ -71,6 +80,7 @@ namespace Graphs
             edgeValueInput.Enabled = false;
             algorithmSelection.SelectedIndex = 0;
             startingVertex = vertexes[0];
+            sinkVertex = vertexes[7];
             pauseButton.Enabled = false;
             stepButton.Enabled = false;
             backstepButton.Enabled = false;
@@ -78,30 +88,26 @@ namespace Graphs
 
             //Spousta objektů
 
-            //Random r = new Random();
-            //for (int i = 0; i < 16; i++)
-            //{
-            //    Vertex newVertex = new Vertex(new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
-            //    foreach (Vertex v in vertexes)
-            //    {
-            //        if (r.Next(0, 11) < 2)
-            //        {
-            //            Edge newEdge = new Edge(newVertex, v, 0, edgeBaseColor, textBaseColor, r.Next(0, 100));
-            //            newVertex.VertexEdges.Add(newEdge);
-            //            v.VertexEdges.Add(newEdge);
-            //            edges.Add(newEdge);
+            Random r = new Random();
+            for (int i = 0; i < 128; i++)
+            {
+                Vertex newVertex = new Vertex(this, new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
+                foreach (Vertex v in vertexes)
+                {
+                    if (r.Next(0, 11) < 2)
+                    {
+                        Edge newEdge = new Edge(this, newVertex, v, false, edgeBaseColor, textBaseColor, r.Next(0, 100));
+                        newVertex.VertexEdges.Add(newEdge);
+                        v.VertexEdges.Add(newEdge);
+                        edges.Add(newEdge);
 
-            //        }
-            //    }
-            //    vertexes.Add(newVertex);
-            //}
-            //Console.WriteLine(edges.Count());
-            //RefreshCanvas();
-
-
+                    }
+                }
+                vertexes.Add(newVertex);
+            }
+            Console.WriteLine(edges.Count());
+            RefreshCanvas();
         }
-
-
 
         //Vykreslí všechny hrany a vrcholy z vertexes a edges
         private void Graph_Paint(object sender, PaintEventArgs e)
@@ -156,10 +162,47 @@ namespace Graphs
                 }
             }
 
-            //Přidá vrchol
+            //Přidá nebo smaže vrchol 
             else if (clickFunctionVertex.SelectedIndex == 0)
             {
-                vertexes.Add(new Vertex(e.Location, vertexBaseColor));
+                if(e.Button == MouseButtons.Left)
+                {
+                    vertexes.Add(new Vertex(this, e.Location, vertexBaseColor));
+                }
+                else if(e.Button == MouseButtons.Right)
+                {
+                    foreach (Vertex vertex in vertexes)
+                    {
+                        if (vertex.Clicked(e.Location))
+                        {
+                            foreach (Edge edge in vertex.VertexEdges.ToArray())
+                            {
+                                edge.Start.VertexEdges.Remove(edge);
+                                edge.End.VertexEdges.Remove(edge);
+                                edges.Remove(edge);
+                            }
+                            vertexes.Remove(vertex);
+                            if (startingVertex == vertex)
+                            {
+                                foreach (Vertex newStartingVertex in vertexes)
+                                {
+                                    startingVertex = newStartingVertex;
+                                }
+                            }
+                            if (sinkVertex == vertex)
+                            {
+                                foreach (Vertex newStartingVertex in vertexes)
+                                {
+                                    if (startingVertex != vertex)
+                                    {
+                                        startingVertex = newStartingVertex;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
             }
 
             //Přesune vrchol
@@ -181,63 +224,60 @@ namespace Graphs
                 {
                     movingVertex.Position = e.Location;
                     movingVertex.Color = vertexBaseColor;
+                    if (euclidean)
+                    {
+                        foreach (Edge edge in movingVertex.VertexEdges)
+                        {
+                            edge.Text = edge.Value + "";
+                        }
+                    }
                     movingVertex = null;
                 }
             }
 
-            //Smaže vrchol
-            else if (clickFunctionVertex.SelectedIndex == 2)
+            //Přidá nebo smaže hranu
+            else if (clickFunctionEdge.SelectedIndex == 0)
             {
-                foreach (Vertex vertex in vertexes)
+                if (e.Button == MouseButtons.Left)
                 {
-                    if (vertex.Clicked(e.Location))
+                    foreach (Vertex vertex in vertexes)
                     {
-                        foreach (Edge edge in vertex.VertexEdges.ToArray())
+                        if (vertex.Clicked(e.Location))
+                        {
+                            if (firstVertexOfNewEdge == null)
+                            {
+                                firstVertexOfNewEdge = vertex;
+                                firstVertexOfNewEdge.Color = mediumHiglightColor;
+                                break;
+                            }
+                            else if (vertex != firstVertexOfNewEdge)
+                            {
+                                Edge newEdge = new Edge(this, firstVertexOfNewEdge, vertex, false, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
+                                firstVertexOfNewEdge.VertexEdges.Add(newEdge);
+                                vertex.VertexEdges.Add(newEdge);
+                                edges.Add(newEdge);
+                                firstVertexOfNewEdge.Color = vertexBaseColor;
+                                firstVertexOfNewEdge = null;
+                            }
+                            break;
+                        }
+                    }
+                    edgeValueInput.Focus();
+                    edgeValueInput.SelectAll();
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    foreach (Edge edge in edges)
+                    {
+                        if (edge.Clicked(e.Location))
                         {
                             edge.Start.VertexEdges.Remove(edge);
                             edge.End.VertexEdges.Remove(edge);
                             edges.Remove(edge);
-                        }
-                        vertexes.Remove(vertex);
-                        if (startingVertex == vertex)
-                        {
-                            foreach (Vertex newStartingVertex in vertexes)
-                            {
-                                startingVertex = newStartingVertex;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-
-            //Přidá hranu
-            else if (clickFunctionEdge.SelectedIndex == 0)
-            {
-                foreach (Vertex vertex in vertexes)
-                {
-                    if (vertex.Clicked(e.Location))
-                    {
-                        if (firstVertexOfNewEdge == null)
-                        {
-                            firstVertexOfNewEdge = vertex;
-                            firstVertexOfNewEdge.Color = mediumHiglightColor;
                             break;
                         }
-                        else if (vertex != firstVertexOfNewEdge)
-                        {
-                            Edge newEdge = new Edge(firstVertexOfNewEdge, vertex, 0, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
-                            firstVertexOfNewEdge.VertexEdges.Add(newEdge);
-                            vertex.VertexEdges.Add(newEdge);
-                            edges.Add(newEdge);
-                            firstVertexOfNewEdge.Color = vertexBaseColor;
-                            firstVertexOfNewEdge = null;
-                        }
-                        break;
                     }
                 }
-                edgeValueInput.Focus();
-                edgeValueInput.SelectAll();
             }
 
             //Změní hodnotu hrany
@@ -257,23 +297,8 @@ namespace Graphs
                 edgeValueInput.SelectAll();
             }
 
-            //Smaže hranu
-            else if (clickFunctionEdge.SelectedIndex == 2)
-            {
-                foreach (Edge edge in edges)
-                {
-                    if (edge.Clicked(e.Location))
-                    {
-                        edge.Start.VertexEdges.Remove(edge);
-                        edge.End.VertexEdges.Remove(edge);
-                        edges.Remove(edge);
-                        break;
-                    }
-                }
-            }
-
             //Určí směr hrany
-            else if (clickFunctionEdge.SelectedIndex == 3)
+            else if (clickFunctionEdge.SelectedIndex == 2)
             {
                 foreach (Edge edge in edges)
                 {
@@ -281,13 +306,35 @@ namespace Graphs
                     {
                         if ((Math.Pow(e.Location.X - edge.End.Position.X, 2) + Math.Pow(e.Location.Y - edge.End.Position.Y, 2)) < (Math.Pow(e.Location.X - edge.Start.Position.X, 2) + Math.Pow(e.Location.Y - edge.Start.Position.Y, 2)))
                         {
-                            edge.End.VertexEdges.Remove(edge);
-                            edge.Direction = 1;
+                            if(edge.Direction == true)
+                            {
+                                //edge.End.VertexEdges.Add(edge);
+                                edge.Direction = false;
+                            }
+                            else
+                            {
+                                //edge.End.VertexEdges.Remove(edge);
+                                edge.Direction = true;
+                            }
                         }
                         else
                         {
-                            edge.Start.VertexEdges.Remove(edge);
-                            edge.Direction = -1;
+                            if(edge.Direction == true)
+                            {
+                                //edge.End.VertexEdges.Add(edge);
+                                //edge.Start.VertexEdges.Remove(edge);
+                                Vertex fn = edge.Start;
+                                edge.Start = edge.End;
+                                edge.End = fn;
+                            }
+                            else
+                            {
+                                //edge.Start.VertexEdges.Remove(edge);
+                                Vertex fn = edge.Start;
+                                edge.Start = edge.End;
+                                edge.End = fn;
+                                edge.Direction = true;
+                            }
                         }
                         break;
                     }
@@ -299,11 +346,26 @@ namespace Graphs
             {
                 foreach (Vertex vertex in vertexes)
                 {
-                    if (vertex.Clicked(e.Location))
+                    if (vertex.Clicked(e.Location) && vertex != sinkVertex)
                     {
                         startingVertex.Color = vertexBaseColor;
                         startingVertex = vertex;
                         vertex.Color = mediumHiglightColor;
+                        break;
+                    }
+                }
+            }
+
+            //Vybere stok
+            else if (clickFunctionStartingVertex.SelectedIndex == 1)
+            {
+                foreach (Vertex vertex in vertexes)
+                {
+                    if (vertex.Clicked(e.Location) && vertex != startingVertex)
+                    {
+                        sinkVertex.Color = vertexBaseColor;
+                        sinkVertex = vertex;
+                        vertex.Color = bigHiglightColor;
                         break;
                     }
                 }
@@ -460,7 +522,7 @@ namespace Graphs
 
 
 
-        //Jarníkův algoritmus
+        //Jarníkův algoritmus MST
         private void Jarnik()
         {
             EdgeMinHeap edgeHeap = new EdgeMinHeap(edges.Count());
@@ -505,7 +567,7 @@ namespace Graphs
 
 
 
-        //Borůvkův algoritmus WIP
+        //Borůvkův algoritmus MST
         private void Boruvka()
         {
             int treeCount = vertexes.Count();
@@ -562,6 +624,7 @@ namespace Graphs
 
 
 
+        //Kruskalův algoritmus MST
         private void Kruskal()
         {
             EdgeMinHeap edgeHeap = new EdgeMinHeap(edges.Count());
@@ -584,6 +647,30 @@ namespace Graphs
 
 
 
+        //Ford-Fulkersonův algoritmus MFP
+        private void FordFulkerson()
+        {
+            foreach(Edge e in edges)
+            {
+                e.Text = "0";
+                e.ResidualValue = e.Value;
+            }
+            bool path = true;
+            while (path)
+            {
+                path = false;
+            }
+        }
+
+
+
+        private bool FFBFS()
+        {
+            return true;
+        }
+
+        
+        
         //Refresh
         private void RefreshCanvas()
         {
@@ -656,9 +743,10 @@ namespace Graphs
             {
                 vertex.Color = vertexBaseColor;
             }
-            if (clickFunctionStartingVertex.SelectedIndex == 0)
+            if (clickFunctionStartingVertex.SelectedIndex == 0 || clickFunctionStartingVertex.SelectedIndex == 1)
             {
                 startingVertex.Color = mediumHiglightColor;
+                sinkVertex.Color = bigHiglightColor;
             }
             if (clickFunctionEdge.SelectedIndex == 0 || clickFunctionEdge.SelectedIndex == 1)
             {
@@ -744,6 +832,16 @@ namespace Graphs
                 }
                 RefreshCanvas();
             }
+        }
+
+        private void euclideanSpaceCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            euclidean = !euclidean;
+            foreach(Edge edge in edges)
+            {
+                edge.Text = edge.Value + "";
+            }
+            RefreshCanvas();
         }
     }
 }

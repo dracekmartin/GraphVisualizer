@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Graphs
 {
@@ -8,6 +9,7 @@ namespace Graphs
         public GraphObject Go;
         public Color Color;
         public string Text;
+        
 
         public Step StepBefore;
         public Step StepAfter;

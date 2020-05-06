@@ -44,6 +44,7 @@
             this.startAlgButton = new System.Windows.Forms.Button();
             this.clickFunctionStartingVertex = new System.Windows.Forms.ListBox();
             this.groupBoxOthers = new System.Windows.Forms.GroupBox();
+            this.euclideanSpaceCheckBox = new System.Windows.Forms.CheckBox();
             this.settingsButton = new System.Windows.Forms.Button();
             this.graph = new System.Windows.Forms.PictureBox();
             this.tableLayoutMain.SuspendLayout();
@@ -73,7 +74,6 @@
             // 
             // flowLayoutControls
             // 
-            this.flowLayoutControls.AutoScroll = true;
             this.flowLayoutControls.BackColor = System.Drawing.SystemColors.ControlDark;
             this.flowLayoutControls.Controls.Add(this.groupBoxGraphCreation);
             this.flowLayoutControls.Controls.Add(this.groupBoxAlg);
@@ -81,7 +81,7 @@
             this.flowLayoutControls.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutControls.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutControls.Name = "flowLayoutControls";
-            this.flowLayoutControls.Size = new System.Drawing.Size(1046, 115);
+            this.flowLayoutControls.Size = new System.Drawing.Size(1046, 126);
             this.flowLayoutControls.TabIndex = 1;
             // 
             // groupBoxGraphCreation
@@ -93,7 +93,7 @@
             this.groupBoxGraphCreation.Controls.Add(this.clickFunctionClick);
             this.groupBoxGraphCreation.Location = new System.Drawing.Point(3, 3);
             this.groupBoxGraphCreation.Name = "groupBoxGraphCreation";
-            this.groupBoxGraphCreation.Size = new System.Drawing.Size(443, 91);
+            this.groupBoxGraphCreation.Size = new System.Drawing.Size(443, 78);
             this.groupBoxGraphCreation.TabIndex = 4;
             this.groupBoxGraphCreation.TabStop = false;
             this.groupBoxGraphCreation.Text = "Graph creation";
@@ -102,13 +102,12 @@
             // 
             this.clickFunctionEdge.FormattingEnabled = true;
             this.clickFunctionEdge.Items.AddRange(new object[] {
-            "Add edge",
+            "Add/delete edge",
             "Change edge value",
-            "Delete edge",
             "Set edge direction"});
             this.clickFunctionEdge.Location = new System.Drawing.Point(277, 16);
             this.clickFunctionEdge.Name = "clickFunctionEdge";
-            this.clickFunctionEdge.Size = new System.Drawing.Size(131, 56);
+            this.clickFunctionEdge.Size = new System.Drawing.Size(131, 43);
             this.clickFunctionEdge.TabIndex = 3;
             this.clickFunctionEdge.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionEdge.Leave += new System.EventHandler(this.ClickFunction_Leave);
@@ -117,12 +116,11 @@
             // 
             this.clickFunctionVertex.FormattingEnabled = true;
             this.clickFunctionVertex.Items.AddRange(new object[] {
-            "Add vertex",
-            "Move vertex",
-            "Delte vertex"});
+            "Add/delete vertex",
+            "Move vertex"});
             this.clickFunctionVertex.Location = new System.Drawing.Point(140, 16);
             this.clickFunctionVertex.Name = "clickFunctionVertex";
-            this.clickFunctionVertex.Size = new System.Drawing.Size(131, 43);
+            this.clickFunctionVertex.Size = new System.Drawing.Size(131, 30);
             this.clickFunctionVertex.TabIndex = 2;
             this.clickFunctionVertex.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionVertex.Leave += new System.EventHandler(this.ClickFunction_Leave);
@@ -203,7 +201,7 @@
             this.waitTimeInput.AutoSize = false;
             this.waitTimeInput.BackColor = System.Drawing.SystemColors.ControlDark;
             this.waitTimeInput.LargeChange = 100;
-            this.waitTimeInput.Location = new System.Drawing.Point(143, 39);
+            this.waitTimeInput.Location = new System.Drawing.Point(143, 52);
             this.waitTimeInput.Maximum = 1000;
             this.waitTimeInput.Minimum = 1;
             this.waitTimeInput.Name = "waitTimeInput";
@@ -239,16 +237,18 @@
             // 
             this.clickFunctionStartingVertex.FormattingEnabled = true;
             this.clickFunctionStartingVertex.Items.AddRange(new object[] {
-            "Choose starting point"});
+            "Choose starting point",
+            "Choose sink"});
             this.clickFunctionStartingVertex.Location = new System.Drawing.Point(143, 16);
             this.clickFunctionStartingVertex.Name = "clickFunctionStartingVertex";
-            this.clickFunctionStartingVertex.Size = new System.Drawing.Size(131, 17);
+            this.clickFunctionStartingVertex.Size = new System.Drawing.Size(131, 30);
             this.clickFunctionStartingVertex.TabIndex = 6;
             this.clickFunctionStartingVertex.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionStartingVertex.Leave += new System.EventHandler(this.ClickFunction_Leave);
             // 
             // groupBoxOthers
             // 
+            this.groupBoxOthers.Controls.Add(this.euclideanSpaceCheckBox);
             this.groupBoxOthers.Controls.Add(this.settingsButton);
             this.groupBoxOthers.Location = new System.Drawing.Point(819, 3);
             this.groupBoxOthers.Name = "groupBoxOthers";
@@ -256,6 +256,17 @@
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
+            // 
+            // euclideanSpaceCheckBox
+            // 
+            this.euclideanSpaceCheckBox.AutoSize = true;
+            this.euclideanSpaceCheckBox.Location = new System.Drawing.Point(6, 45);
+            this.euclideanSpaceCheckBox.Name = "euclideanSpaceCheckBox";
+            this.euclideanSpaceCheckBox.Size = new System.Drawing.Size(121, 17);
+            this.euclideanSpaceCheckBox.TabIndex = 7;
+            this.euclideanSpaceCheckBox.Text = "Euclidean distances";
+            this.euclideanSpaceCheckBox.UseVisualStyleBackColor = true;
+            this.euclideanSpaceCheckBox.CheckedChanged += new System.EventHandler(this.euclideanSpaceCheckBox_CheckedChanged);
             // 
             // settingsButton
             // 
@@ -270,9 +281,9 @@
             // graph
             // 
             this.graph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graph.Location = new System.Drawing.Point(3, 124);
+            this.graph.Location = new System.Drawing.Point(3, 135);
             this.graph.Name = "graph";
-            this.graph.Size = new System.Drawing.Size(1046, 374);
+            this.graph.Size = new System.Drawing.Size(1046, 363);
             this.graph.TabIndex = 2;
             this.graph.TabStop = false;
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
@@ -296,6 +307,7 @@
             this.groupBoxAlg.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.waitTimeInput)).EndInit();
             this.groupBoxOthers.ResumeLayout(false);
+            this.groupBoxOthers.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.graph)).EndInit();
             this.ResumeLayout(false);
 
@@ -321,6 +333,7 @@
         private System.Windows.Forms.Button pauseButton;
         private System.Windows.Forms.Button backstepButton;
         private System.Windows.Forms.Button stepButton;
+        private System.Windows.Forms.CheckBox euclideanSpaceCheckBox;
     }
 }
 

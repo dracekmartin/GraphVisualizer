@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace Graphs
 {
@@ -8,11 +9,31 @@ namespace Graphs
     {
         public Vertex Start;
         public Vertex End;
-        public int Direction;
+        public bool Direction;
         public Color TextColor;
         public int Width;
+        public int ResidualValue;
+        private int hidden_value;
+        public int Value
+        {
+            get
+            {
+                if (Canvas.euclidean)
+                {
+                    return ((int)Math.Floor(Math.Sqrt((Math.Pow(Start.Position.X - End.Position.X, 2) + (Math.Pow(Start.Position.Y - End.Position.Y, 2))))));
+                }
+                else
+                {
+                    return hidden_value;
+                }
+            }
+            set
+            {
+                hidden_value = value;
+            }
+        }
 
-        public Edge(Vertex init_start, Vertex init_end, int init_direction, Color init_color, Color init_textColor, int init_value)
+        public Edge(FormMain init_canvas, Vertex init_start, Vertex init_end, bool init_direction, Color init_color, Color init_textColor, int init_value)
         {
             Color = init_color;
             Value = init_value;
@@ -23,23 +44,17 @@ namespace Graphs
             Direction = init_direction;
             TextColor = init_textColor;
             Width = 5;
+
+            Canvas = init_canvas;
         }
 
         public void DrawEdge(Graphics g)
         {
             Pen p = new Pen(Color, Width);
-
-            g.DrawLine(p, Start.Position, End.Position);
-
-            AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * Width, Width);
-            if (Direction == 1)
+            if (Direction == true)
             {
+                AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * Width, Width);
                 p.CustomEndCap = aab;
-                g.DrawLine(p, Start.Position, End.Position);
-            }
-            else if (Direction == -1)
-            {
-                p.CustomStartCap = aab;
                 g.DrawLine(p, Start.Position, End.Position);
             }
             else

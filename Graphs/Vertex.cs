@@ -11,7 +11,7 @@ namespace Graphs
         public int Radius;
         public Point Position;
 
-        public Vertex(Point init_position, Color init_color)
+        public Vertex(FormMain init_canvas, Point init_position, Color init_color)
         {
             Color = init_color;
             Value = int.MaxValue;
@@ -24,6 +24,8 @@ namespace Graphs
 
             PartOfSubset = this;
             ShortestEdge = null;
+
+            Canvas = init_canvas;
         }
 
         public void DrawVertex(Graphics g)
@@ -72,6 +74,7 @@ namespace Graphs
             }
         }
         public Edge ShortestEdge;
+        
     }
 }
 
