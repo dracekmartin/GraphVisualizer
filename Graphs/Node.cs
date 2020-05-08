@@ -4,31 +4,54 @@ using System.Collections.Generic;
 
 namespace Graphs
 {
-    public class Vertex : GraphObject
+    public class Node : GraphObject
     {
-        public List<Edge> VertexEdges;
-        public bool Visited;
-        public int Radius;
         public Point Position;
+        public int Radius;
 
-        public Vertex(FormMain init_canvas, Point init_position, Color init_color)
+        public int Value;
+        public List<Edge> NodeEdges;
+        public bool Visited;
+        private Node hidden_PartOfSubset;
+        public Node PartOfSubset
+        {
+            get
+            {
+                if (hidden_PartOfSubset.Equals(this))
+                {
+                    return hidden_PartOfSubset;
+                }
+                else
+                {
+                    hidden_PartOfSubset = hidden_PartOfSubset.PartOfSubset;
+                    return hidden_PartOfSubset;
+                }
+            }
+            set
+            {
+                hidden_PartOfSubset = value;
+            }
+        }
+        public Edge ImportantEdge;
+
+        public Node(FormMain init_canvas, Point init_position, Color init_color)
         {
             Color = init_color;
             Value = int.MaxValue;
             Text = "∞";
 
             Position = init_position;
-            VertexEdges = new List<Edge>();
+            NodeEdges = new List<Edge>();
             Radius = 5;
             Visited = false;
 
             PartOfSubset = this;
-            ShortestEdge = null;
+            ImportantEdge = null;
 
             Canvas = init_canvas;
         }
 
-        public void DrawVertex(Graphics g)
+        public void DrawNode(Graphics g)
         {
             g.FillEllipse(new SolidBrush(Color), new Rectangle(Position.X - Radius, Position.Y - Radius, 2 * Radius, 2 * Radius));
         }
@@ -53,27 +76,7 @@ namespace Graphs
             }
         }
 
-        private Vertex partOfSubset;
-        public Vertex PartOfSubset
-        {
-            get
-            {
-                if (partOfSubset.Equals(this))
-                {
-                    return partOfSubset;
-                }
-                else
-                {
-                    partOfSubset = partOfSubset.PartOfSubset;
-                    return partOfSubset;
-                }
-            }
-            set
-            {
-                partOfSubset = value;
-            }
-        }
-        public Edge ShortestEdge;
+        
         
     }
 }

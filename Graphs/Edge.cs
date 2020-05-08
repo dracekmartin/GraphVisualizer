@@ -7,13 +7,12 @@ namespace Graphs
 {
     public class Edge : GraphObject
     {
-        public Vertex Start;
-        public Vertex End;
-        public bool Direction;
+        public Node Start;
+        public Node End;
         public Color TextColor;
         public int Width;
-        public int ResidualValue;
-        private int hidden_value;
+
+        private int hidden_Value;
         public int Value
         {
             get
@@ -24,16 +23,24 @@ namespace Graphs
                 }
                 else
                 {
-                    return hidden_value;
+                    return hidden_Value;
                 }
             }
             set
             {
-                hidden_value = value;
+                hidden_Value = value;
             }
         }
 
-        public Edge(FormMain init_canvas, Vertex init_start, Vertex init_end, bool init_direction, Color init_color, Color init_textColor, int init_value)
+        public int ResidualValue;
+
+        public int ReverseValue;
+
+        public bool Reversed;
+
+        
+
+        public Edge(FormMain init_canvas, Node init_start, Node init_end, Color init_color, Color init_textColor, int init_value)
         {
             Color = init_color;
             Value = init_value;
@@ -41,7 +48,6 @@ namespace Graphs
 
             Start = init_start;
             End = init_end;
-            Direction = init_direction;
             TextColor = init_textColor;
             Width = 5;
 
@@ -51,7 +57,7 @@ namespace Graphs
         public void DrawEdge(Graphics g)
         {
             Pen p = new Pen(Color, Width);
-            if (Direction == true)
+            if (Canvas.directed == true)
             {
                 AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * Width, Width);
                 p.CustomEndCap = aab;
@@ -68,12 +74,14 @@ namespace Graphs
             g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2, (Start.Position.Y + End.Position.Y) / 2));
         }
 
+
+        //WIP
         public bool Clicked(Point click)
         {
-            if ((click.X > Start.Position.X && click.X > End.Position.X) ||
-                (click.X < Start.Position.X && click.X < End.Position.X) ||
-                (click.Y > Start.Position.Y && click.Y > End.Position.Y) ||
-                (click.Y > Start.Position.Y && click.Y > End.Position.Y)) return false;
+            if ((click.X > Start.Position.X + Width && click.X > End.Position.X + Width) ||
+                (click.X < Start.Position.X - Width && click.X < End.Position.X - Width) ||
+                (click.Y > Start.Position.Y + Width && click.Y > End.Position.Y + Width) ||
+                (click.Y < Start.Position.Y - Width && click.Y < End.Position.Y - Width)) return false;
             float diffX = End.Position.X - Start.Position.X;
             float diffY = End.Position.Y - Start.Position.Y;
             float distance = (float)

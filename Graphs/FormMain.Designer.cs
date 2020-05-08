@@ -32,7 +32,7 @@
             this.flowLayoutControls = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBoxGraphCreation = new System.Windows.Forms.GroupBox();
             this.clickFunctionEdge = new System.Windows.Forms.ListBox();
-            this.clickFunctionVertex = new System.Windows.Forms.ListBox();
+            this.clickFunctionNode = new System.Windows.Forms.ListBox();
             this.edgeValueInput = new System.Windows.Forms.MaskedTextBox();
             this.clickFunctionClick = new System.Windows.Forms.ListBox();
             this.groupBoxAlg = new System.Windows.Forms.GroupBox();
@@ -42,8 +42,9 @@
             this.waitTimeInput = new System.Windows.Forms.TrackBar();
             this.algorithmSelection = new System.Windows.Forms.ListBox();
             this.startAlgButton = new System.Windows.Forms.Button();
-            this.clickFunctionStartingVertex = new System.Windows.Forms.ListBox();
+            this.clickFunctionStartingNode = new System.Windows.Forms.ListBox();
             this.groupBoxOthers = new System.Windows.Forms.GroupBox();
+            this.directedCheckBox = new System.Windows.Forms.CheckBox();
             this.euclideanSpaceCheckBox = new System.Windows.Forms.CheckBox();
             this.settingsButton = new System.Windows.Forms.Button();
             this.graph = new System.Windows.Forms.PictureBox();
@@ -88,7 +89,7 @@
             // 
             this.groupBoxGraphCreation.AutoSize = true;
             this.groupBoxGraphCreation.Controls.Add(this.clickFunctionEdge);
-            this.groupBoxGraphCreation.Controls.Add(this.clickFunctionVertex);
+            this.groupBoxGraphCreation.Controls.Add(this.clickFunctionNode);
             this.groupBoxGraphCreation.Controls.Add(this.edgeValueInput);
             this.groupBoxGraphCreation.Controls.Add(this.clickFunctionClick);
             this.groupBoxGraphCreation.Location = new System.Drawing.Point(3, 3);
@@ -112,18 +113,18 @@
             this.clickFunctionEdge.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionEdge.Leave += new System.EventHandler(this.ClickFunction_Leave);
             // 
-            // clickFunctionVertex
+            // clickFunctionNode
             // 
-            this.clickFunctionVertex.FormattingEnabled = true;
-            this.clickFunctionVertex.Items.AddRange(new object[] {
-            "Add/delete vertex",
-            "Move vertex"});
-            this.clickFunctionVertex.Location = new System.Drawing.Point(140, 16);
-            this.clickFunctionVertex.Name = "clickFunctionVertex";
-            this.clickFunctionVertex.Size = new System.Drawing.Size(131, 30);
-            this.clickFunctionVertex.TabIndex = 2;
-            this.clickFunctionVertex.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
-            this.clickFunctionVertex.Leave += new System.EventHandler(this.ClickFunction_Leave);
+            this.clickFunctionNode.FormattingEnabled = true;
+            this.clickFunctionNode.Items.AddRange(new object[] {
+            "Add/delete node",
+            "Move node"});
+            this.clickFunctionNode.Location = new System.Drawing.Point(140, 16);
+            this.clickFunctionNode.Name = "clickFunctionNode";
+            this.clickFunctionNode.Size = new System.Drawing.Size(131, 30);
+            this.clickFunctionNode.TabIndex = 2;
+            this.clickFunctionNode.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
+            this.clickFunctionNode.Leave += new System.EventHandler(this.ClickFunction_Leave);
             // 
             // edgeValueInput
             // 
@@ -157,7 +158,7 @@
             this.groupBoxAlg.Controls.Add(this.waitTimeInput);
             this.groupBoxAlg.Controls.Add(this.algorithmSelection);
             this.groupBoxAlg.Controls.Add(this.startAlgButton);
-            this.groupBoxAlg.Controls.Add(this.clickFunctionStartingVertex);
+            this.groupBoxAlg.Controls.Add(this.clickFunctionStartingNode);
             this.groupBoxAlg.Location = new System.Drawing.Point(452, 3);
             this.groupBoxAlg.Name = "groupBoxAlg";
             this.groupBoxAlg.Size = new System.Drawing.Size(361, 110);
@@ -216,10 +217,11 @@
             "Dijsktra",
             "Jarník",
             "Borůvka",
-            "Kruskal"});
+            "Kruskal",
+            "Edmonds-Karp"});
             this.algorithmSelection.Location = new System.Drawing.Point(6, 16);
             this.algorithmSelection.Name = "algorithmSelection";
-            this.algorithmSelection.Size = new System.Drawing.Size(131, 56);
+            this.algorithmSelection.Size = new System.Drawing.Size(131, 69);
             this.algorithmSelection.TabIndex = 5;
             // 
             // startAlgButton
@@ -233,21 +235,22 @@
             this.startAlgButton.UseVisualStyleBackColor = true;
             this.startAlgButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // clickFunctionStartingVertex
+            // clickFunctionStartingNode
             // 
-            this.clickFunctionStartingVertex.FormattingEnabled = true;
-            this.clickFunctionStartingVertex.Items.AddRange(new object[] {
+            this.clickFunctionStartingNode.FormattingEnabled = true;
+            this.clickFunctionStartingNode.Items.AddRange(new object[] {
             "Choose starting point",
             "Choose sink"});
-            this.clickFunctionStartingVertex.Location = new System.Drawing.Point(143, 16);
-            this.clickFunctionStartingVertex.Name = "clickFunctionStartingVertex";
-            this.clickFunctionStartingVertex.Size = new System.Drawing.Size(131, 30);
-            this.clickFunctionStartingVertex.TabIndex = 6;
-            this.clickFunctionStartingVertex.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
-            this.clickFunctionStartingVertex.Leave += new System.EventHandler(this.ClickFunction_Leave);
+            this.clickFunctionStartingNode.Location = new System.Drawing.Point(143, 16);
+            this.clickFunctionStartingNode.Name = "clickFunctionStartingNode";
+            this.clickFunctionStartingNode.Size = new System.Drawing.Size(131, 30);
+            this.clickFunctionStartingNode.TabIndex = 6;
+            this.clickFunctionStartingNode.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
+            this.clickFunctionStartingNode.Leave += new System.EventHandler(this.ClickFunction_Leave);
             // 
             // groupBoxOthers
             // 
+            this.groupBoxOthers.Controls.Add(this.directedCheckBox);
             this.groupBoxOthers.Controls.Add(this.euclideanSpaceCheckBox);
             this.groupBoxOthers.Controls.Add(this.settingsButton);
             this.groupBoxOthers.Location = new System.Drawing.Point(819, 3);
@@ -256,6 +259,17 @@
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
+            // 
+            // directedCheckBox
+            // 
+            this.directedCheckBox.AutoSize = true;
+            this.directedCheckBox.Location = new System.Drawing.Point(6, 68);
+            this.directedCheckBox.Name = "directedCheckBox";
+            this.directedCheckBox.Size = new System.Drawing.Size(96, 17);
+            this.directedCheckBox.TabIndex = 8;
+            this.directedCheckBox.Text = "Directed graph";
+            this.directedCheckBox.UseVisualStyleBackColor = true;
+            this.directedCheckBox.CheckedChanged += new System.EventHandler(this.directedCheckBox_CheckedChanged);
             // 
             // euclideanSpaceCheckBox
             // 
@@ -319,13 +333,13 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutControls;
         private System.Windows.Forms.GroupBox groupBoxGraphCreation;
         private System.Windows.Forms.ListBox clickFunctionEdge;
-        private System.Windows.Forms.ListBox clickFunctionVertex;
+        private System.Windows.Forms.ListBox clickFunctionNode;
         private System.Windows.Forms.MaskedTextBox edgeValueInput;
         private System.Windows.Forms.ListBox clickFunctionClick;
         private System.Windows.Forms.GroupBox groupBoxAlg;
         private System.Windows.Forms.ListBox algorithmSelection;
         private System.Windows.Forms.Button startAlgButton;
-        private System.Windows.Forms.ListBox clickFunctionStartingVertex;
+        private System.Windows.Forms.ListBox clickFunctionStartingNode;
         private System.Windows.Forms.PictureBox graph;
         private System.Windows.Forms.TrackBar waitTimeInput;
         private System.Windows.Forms.Button settingsButton;
@@ -334,6 +348,7 @@
         private System.Windows.Forms.Button backstepButton;
         private System.Windows.Forms.Button stepButton;
         private System.Windows.Forms.CheckBox euclideanSpaceCheckBox;
+        private System.Windows.Forms.CheckBox directedCheckBox;
     }
 }
 

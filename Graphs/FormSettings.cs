@@ -22,9 +22,9 @@ namespace Graphs
         {
             ColorDialog cd = new ColorDialog();
             cd.FullOpen = true;
-            cd.Color = mainForm.vertexBaseColor;
+            cd.Color = mainForm.nodeBaseColor;
             cd.ShowDialog();
-            mainForm.vertexBaseColor = cd.Color;
+            mainForm.nodeBaseColor = cd.Color;
             mainForm.Recolor();
         }
 

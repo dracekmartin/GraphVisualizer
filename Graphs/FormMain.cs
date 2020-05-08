@@ -9,7 +9,7 @@ namespace Graphs
     public partial class FormMain : Form
     {
         //Defaultní graf
-        readonly Point[] defaultVertexPositions = new Point[]{
+        readonly Point[] defaultNodePosition = new Point[]{
             new Point(150*3,100*3),
             new Point(140*3,140*3),
             new Point(160*3,140*3),
@@ -30,14 +30,15 @@ namespace Graphs
             {0,0,0,7,0,0,23,0}
         };
         //Globální proměnné
-        List<Vertex> vertexes = new List<Vertex>();
+        List<Node> nodes = new List<Node>();
         List<Edge> edges = new List<Edge>();
         Step currentStep = null;
-        Vertex startingVertex = null;
-        Vertex sinkVertex = null;
+        Node startingNode = null;
+        Node sinkNode = null;
         public bool euclidean = false;
+        public bool directed = false;
         //Globální proměnné barev
-        public Color vertexBaseColor = Color.CadetBlue;
+        public Color nodeBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
         public Color textBaseColor = Color.Black;
         public Color smallHiglightColor = Color.FromArgb(220, 220, 0);
@@ -60,56 +61,34 @@ namespace Graphs
         private void OnStart()
         {
             //Načtení defaultního grafu
-            foreach (Point iterPoint in defaultVertexPositions)
+            foreach (Point iterPoint in defaultNodePosition)
             {
-                vertexes.Add(new Vertex(this, iterPoint, vertexBaseColor));
+                nodes.Add(new Node(this, iterPoint, nodeBaseColor));
             }
-            for (int i = 0; i < vertexes.Count(); i++)
+            for (int i = 0; i < nodes.Count(); i++)
             {
-                for (int k = vertexes.Count() - 1; k > i; k--)
+                for (int k = nodes.Count() - 1; k > i; k--)
                 {
                     if (defaultMatrix[i, k] > 0)
                     {
-                        Edge newEdge = new Edge(this, vertexes[i], vertexes[k], false, edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
-                        vertexes[i].VertexEdges.Add(newEdge);
-                        vertexes[k].VertexEdges.Add(newEdge);
+                        Edge newEdge = new Edge(this, nodes[i], nodes[k], edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
+                        nodes[i].NodeEdges.Add(newEdge);
+                        nodes[k].NodeEdges.Add(newEdge);
                         edges.Add(newEdge);
                     }
                 }
             }
             edgeValueInput.Enabled = false;
             algorithmSelection.SelectedIndex = 0;
-            startingVertex = vertexes[0];
-            sinkVertex = vertexes[7];
+            startingNode = nodes[0];
+            sinkNode = nodes[7];
             pauseButton.Enabled = false;
             stepButton.Enabled = false;
             backstepButton.Enabled = false;
             RefreshCanvas();
-
-            //Spousta objektů
-
-            Random r = new Random();
-            for (int i = 0; i < 128; i++)
-            {
-                Vertex newVertex = new Vertex(this, new Point(r.Next(0, 960), r.Next(0, 540)), vertexBaseColor);
-                foreach (Vertex v in vertexes)
-                {
-                    if (r.Next(0, 11) < 2)
-                    {
-                        Edge newEdge = new Edge(this, newVertex, v, false, edgeBaseColor, textBaseColor, r.Next(0, 100));
-                        newVertex.VertexEdges.Add(newEdge);
-                        v.VertexEdges.Add(newEdge);
-                        edges.Add(newEdge);
-
-                    }
-                }
-                vertexes.Add(newVertex);
-            }
-            Console.WriteLine(edges.Count());
-            RefreshCanvas();
         }
 
-        //Vykreslí všechny hrany a vrcholy z vertexes a edges
+        //Vykreslí všechny hrany a vrcholy z nodes a edges
         private void Graph_Paint(object sender, PaintEventArgs e)
         {
             foreach (Edge edge in edges)
@@ -118,34 +97,34 @@ namespace Graphs
                 edge.DrawText(e.Graphics);
             }
 
-            foreach (Vertex vertex in vertexes)
+            foreach (Node Node in nodes)
             {
-                vertex.DrawVertex(e.Graphics);
-                vertex.DrawText(e.Graphics);
+                Node.DrawNode(e.Graphics);
+                Node.DrawText(e.Graphics);
             }
         }
 
 
 
         //Řeší kliknutí na graf
-        Vertex firstVertexOfNewEdge = null;
-        Vertex movingVertex = null;
+        Node firstNodeOfNewEdge = null;
+        Node movingNode = null;
         private void Graph_MouseClick(object sender, MouseEventArgs e)
         {
             //Zvýrazní vrchol nebo hranu
             if (clickFunctionClick.SelectedIndex == 0)
             {
                 bool found = false;
-                foreach (Vertex vertex in vertexes)
+                foreach (Node node in nodes)
                 {
-                    if (found == false && vertex.Clicked(e.Location))
+                    if (found == false && node.Clicked(e.Location))
                     {
-                        vertex.Color = mediumHiglightColor;
+                        node.Color = mediumHiglightColor;
                         found = true;
                     }
                     else
                     {
-                        vertex.Color = vertexBaseColor;
+                        node.Color = nodeBaseColor;
                     }
                 }
                 foreach (Edge edge in edges)
@@ -163,39 +142,39 @@ namespace Graphs
             }
 
             //Přidá nebo smaže vrchol 
-            else if (clickFunctionVertex.SelectedIndex == 0)
+            else if (clickFunctionNode.SelectedIndex == 0)
             {
                 if(e.Button == MouseButtons.Left)
                 {
-                    vertexes.Add(new Vertex(this, e.Location, vertexBaseColor));
+                    nodes.Add(new Node(this, e.Location, nodeBaseColor));
                 }
                 else if(e.Button == MouseButtons.Right)
                 {
-                    foreach (Vertex vertex in vertexes)
+                    foreach (Node node in nodes)
                     {
-                        if (vertex.Clicked(e.Location))
+                        if (node.Clicked(e.Location))
                         {
-                            foreach (Edge edge in vertex.VertexEdges.ToArray())
+                            foreach (Edge edge in node.NodeEdges.ToArray())
                             {
-                                edge.Start.VertexEdges.Remove(edge);
-                                edge.End.VertexEdges.Remove(edge);
+                                edge.Start.NodeEdges.Remove(edge);
+                                edge.End.NodeEdges.Remove(edge);
                                 edges.Remove(edge);
                             }
-                            vertexes.Remove(vertex);
-                            if (startingVertex == vertex)
+                            nodes.Remove(node);
+                            if (startingNode == node)
                             {
-                                foreach (Vertex newStartingVertex in vertexes)
+                                foreach (Node newStartingNode in nodes)
                                 {
-                                    startingVertex = newStartingVertex;
+                                    startingNode = newStartingNode;
                                 }
                             }
-                            if (sinkVertex == vertex)
+                            if (sinkNode == node)
                             {
-                                foreach (Vertex newStartingVertex in vertexes)
+                                foreach (Node newStartingNode in nodes)
                                 {
-                                    if (startingVertex != vertex)
+                                    if (startingNode != node)
                                     {
-                                        startingVertex = newStartingVertex;
+                                        startingNode = newStartingNode;
                                     }
                                 }
                             }
@@ -206,32 +185,32 @@ namespace Graphs
             }
 
             //Přesune vrchol
-            else if (clickFunctionVertex.SelectedIndex == 1)
+            else if (clickFunctionNode.SelectedIndex == 1)
             {
-                if (movingVertex == null)
+                if (movingNode == null)
                 {
-                    foreach (Vertex vertex in vertexes)
+                    foreach (Node node in nodes)
                     {
-                        if (vertex.Clicked(e.Location))
+                        if (node.Clicked(e.Location))
                         {
-                            vertex.Color = mediumHiglightColor;
-                            movingVertex = vertex;
+                            node.Color = mediumHiglightColor;
+                            movingNode = node;
                             break;
                         }
                     }
                 }
                 else
                 {
-                    movingVertex.Position = e.Location;
-                    movingVertex.Color = vertexBaseColor;
+                    movingNode.Position = e.Location;
+                    movingNode.Color = nodeBaseColor;
                     if (euclidean)
                     {
-                        foreach (Edge edge in movingVertex.VertexEdges)
+                        foreach (Edge edge in movingNode.NodeEdges)
                         {
                             edge.Text = edge.Value + "";
                         }
                     }
-                    movingVertex = null;
+                    movingNode = null;
                 }
             }
 
@@ -240,24 +219,24 @@ namespace Graphs
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    foreach (Vertex vertex in vertexes)
+                    foreach (Node node in nodes)
                     {
-                        if (vertex.Clicked(e.Location))
+                        if (node.Clicked(e.Location))
                         {
-                            if (firstVertexOfNewEdge == null)
+                            if (firstNodeOfNewEdge == null)
                             {
-                                firstVertexOfNewEdge = vertex;
-                                firstVertexOfNewEdge.Color = mediumHiglightColor;
+                                firstNodeOfNewEdge = node;
+                                firstNodeOfNewEdge.Color = mediumHiglightColor;
                                 break;
                             }
-                            else if (vertex != firstVertexOfNewEdge)
+                            else if (node != firstNodeOfNewEdge)
                             {
-                                Edge newEdge = new Edge(this, firstVertexOfNewEdge, vertex, false, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
-                                firstVertexOfNewEdge.VertexEdges.Add(newEdge);
-                                vertex.VertexEdges.Add(newEdge);
+                                Edge newEdge = new Edge(this, firstNodeOfNewEdge, node, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
+                                firstNodeOfNewEdge.NodeEdges.Add(newEdge);
+                                node.NodeEdges.Add(newEdge);
                                 edges.Add(newEdge);
-                                firstVertexOfNewEdge.Color = vertexBaseColor;
-                                firstVertexOfNewEdge = null;
+                                firstNodeOfNewEdge.Color = nodeBaseColor;
+                                firstNodeOfNewEdge = null;
                             }
                             break;
                         }
@@ -271,8 +250,8 @@ namespace Graphs
                     {
                         if (edge.Clicked(e.Location))
                         {
-                            edge.Start.VertexEdges.Remove(edge);
-                            edge.End.VertexEdges.Remove(edge);
+                            edge.Start.NodeEdges.Remove(edge);
+                            edge.End.NodeEdges.Remove(edge);
                             edges.Remove(edge);
                             break;
                         }
@@ -304,37 +283,11 @@ namespace Graphs
                 {
                     if (edge.Clicked(e.Location))
                     {
-                        if ((Math.Pow(e.Location.X - edge.End.Position.X, 2) + Math.Pow(e.Location.Y - edge.End.Position.Y, 2)) < (Math.Pow(e.Location.X - edge.Start.Position.X, 2) + Math.Pow(e.Location.Y - edge.Start.Position.Y, 2)))
+                        if ((Math.Pow(e.Location.X - edge.End.Position.X, 2) + Math.Pow(e.Location.Y - edge.End.Position.Y, 2)) > (Math.Pow(e.Location.X - edge.Start.Position.X, 2) + Math.Pow(e.Location.Y - edge.Start.Position.Y, 2)))
                         {
-                            if(edge.Direction == true)
-                            {
-                                //edge.End.VertexEdges.Add(edge);
-                                edge.Direction = false;
-                            }
-                            else
-                            {
-                                //edge.End.VertexEdges.Remove(edge);
-                                edge.Direction = true;
-                            }
-                        }
-                        else
-                        {
-                            if(edge.Direction == true)
-                            {
-                                //edge.End.VertexEdges.Add(edge);
-                                //edge.Start.VertexEdges.Remove(edge);
-                                Vertex fn = edge.Start;
-                                edge.Start = edge.End;
-                                edge.End = fn;
-                            }
-                            else
-                            {
-                                //edge.Start.VertexEdges.Remove(edge);
-                                Vertex fn = edge.Start;
-                                edge.Start = edge.End;
-                                edge.End = fn;
-                                edge.Direction = true;
-                            }
+                            Node fn = edge.Start;
+                            edge.Start = edge.End;
+                            edge.End = fn;
                         }
                         break;
                     }
@@ -342,30 +295,30 @@ namespace Graphs
             }
 
             //Vybere začáteční vrchol
-            else if (clickFunctionStartingVertex.SelectedIndex == 0)
+            else if (clickFunctionStartingNode.SelectedIndex == 0)
             {
-                foreach (Vertex vertex in vertexes)
+                foreach (Node node in nodes)
                 {
-                    if (vertex.Clicked(e.Location) && vertex != sinkVertex)
+                    if (node.Clicked(e.Location) && node != sinkNode)
                     {
-                        startingVertex.Color = vertexBaseColor;
-                        startingVertex = vertex;
-                        vertex.Color = mediumHiglightColor;
+                        startingNode.Color = nodeBaseColor;
+                        startingNode = node;
+                        node.Color = mediumHiglightColor;
                         break;
                     }
                 }
             }
 
             //Vybere stok
-            else if (clickFunctionStartingVertex.SelectedIndex == 1)
+            else if (clickFunctionStartingNode.SelectedIndex == 1)
             {
-                foreach (Vertex vertex in vertexes)
+                foreach (Node node in nodes)
                 {
-                    if (vertex.Clicked(e.Location) && vertex != startingVertex)
+                    if (node.Clicked(e.Location) && node != startingNode)
                     {
-                        sinkVertex.Color = vertexBaseColor;
-                        sinkVertex = vertex;
-                        vertex.Color = bigHiglightColor;
+                        sinkNode.Color = nodeBaseColor;
+                        sinkNode = node;
+                        node.Color = bigHiglightColor;
                         break;
                     }
                 }
@@ -384,20 +337,20 @@ namespace Graphs
 
                 startAlgButton.Text = "Reset";
                 clickFunctionClick.Enabled = false;
-                clickFunctionVertex.Enabled = false;
+                clickFunctionNode.Enabled = false;
                 clickFunctionEdge.Enabled = false;
                 edgeValueInput.Enabled = false;
                 algorithmSelection.Enabled = false;
-                clickFunctionStartingVertex.Enabled = false;
+                clickFunctionStartingNode.Enabled = false;
                 settingsButton.Enabled = false;
                 pauseButton.Enabled = true;
 
-                foreach (Vertex v in vertexes)
+                foreach (Node node in nodes)
                 {
-                    v.Value = int.MaxValue;
-                    v.Text = "∞";
-                    v.Color = vertexBaseColor;
-                    v.Visited = false;
+                    node.Value = int.MaxValue;
+                    node.Text = "∞";
+                    node.Color = nodeBaseColor;
+                    node.Visited = false;
                 }
                 foreach (Edge edge in edges)
                 {
@@ -420,6 +373,10 @@ namespace Graphs
                 {
                     Kruskal();
                 }
+                else if (algorithmSelection.SelectedIndex == 4)
+                {
+                    EdmondsKarp();
+                }
 
                 while (currentStep.StepBefore != null)
                 {
@@ -438,17 +395,18 @@ namespace Graphs
             {
                 t.Enabled = false;
                 currentStep = null;
-                foreach (Vertex v in vertexes)
+                foreach (Node node in nodes)
                 {
-                    v.Value = int.MaxValue;
-                    v.Text = "∞";
-                    v.Color = vertexBaseColor;
-                    v.Visited = false;
-                    v.PartOfSubset = v;
-                    v.ShortestEdge = null;
+                    node.Value = int.MaxValue;
+                    node.Text = "∞";
+                    node.Color = nodeBaseColor;
+                    node.Visited = false;
+                    node.PartOfSubset = node;
+                    node.ImportantEdge = null;
                 }
                 foreach (Edge edge in edges)
                 {
+                    edge.Text = edge.Value + "";
                     edge.Color = edgeBaseColor;
                 }
 
@@ -456,11 +414,11 @@ namespace Graphs
                 startAlgButton.Text = "Start";
                 pauseButton.Text = "Pause";
                 clickFunctionClick.Enabled = true;
-                clickFunctionVertex.Enabled = true;
+                clickFunctionNode.Enabled = true;
                 clickFunctionEdge.Enabled = true;
                 edgeValueInput.Enabled = true;
                 algorithmSelection.Enabled = true;
-                clickFunctionStartingVertex.Enabled = true;
+                clickFunctionStartingNode.Enabled = true;
                 settingsButton.Enabled = true;
                 pauseButton.Enabled = false;
             }
@@ -471,49 +429,49 @@ namespace Graphs
         //Dijkstrův algoritmus
         private void Dijkstra()
         {
-            startingVertex.Value = 0;
-            NewStep(new Step(startingVertex, "0"));
-            for (int count = 0; count < vertexes.Count(); count++)
+            startingNode.Value = 0;
+            NewStep(new Step(startingNode, "0"));
+            for (int count = 0; count < nodes.Count(); count++)
             {
-                Vertex current = null;
-                foreach (Vertex v in vertexes)
+                Node current = null;
+                foreach (Node node in nodes)
                 {
-                    if (v.Visited == false && current == null)
+                    if (node.Visited == false && current == null)
                     {
-                        current = v;
+                        current = node;
                     }
-                    else if (v.Visited == false && v.Value < current.Value)
+                    else if (node.Visited == false && node.Value < current.Value)
                     {
-                        current = v;
+                        current = node;
                     }
                 }
                 current.Visited = true;
                 NewStep(new Step(current, mediumHiglightColor, current.Value + ""));
-                foreach (Edge e in current.VertexEdges)
+                foreach (Edge edge in current.NodeEdges)
                 {
-                    if (e.Start.Equals(current) && e.End.Visited == false)
+                    if (edge.Start.Equals(current) && edge.End.Visited == false)
                     {
-                        NewStep(new Step(e, smallHiglightColor));
-                        NewStep(new Step(e.End, smallHiglightColor));
-                        if (current.Value != int.MaxValue && e.End.Value > e.Value + current.Value)
+                        NewStep(new Step(edge, smallHiglightColor));
+                        NewStep(new Step(edge.End, smallHiglightColor));
+                        if (current.Value != int.MaxValue && edge.End.Value > edge.Value + current.Value)
                         {
-                            e.End.Value = e.Value + current.Value;
-                            NewStep(new Step(e.End, e.End.Value + ""));
+                            edge.End.Value = edge.Value + current.Value;
+                            NewStep(new Step(edge.End, edge.End.Value + ""));
                         }
-                        NewStep(new Step(e.End, vertexBaseColor, e.End.Value + ""));
-                        NewStep(new Step(e, edgeBaseColor));
+                        NewStep(new Step(edge.End, nodeBaseColor, edge.End.Value + ""));
+                        NewStep(new Step(edge, edgeBaseColor));
                     }
-                    else if (e.End.Equals(current) && e.Start.Visited == false)
+                    else if (edge.End.Equals(current) && edge.Start.Visited == false)
                     {
-                        NewStep(new Step(e, smallHiglightColor));
-                        NewStep(new Step(e.Start, smallHiglightColor));
-                        if (current.Value != int.MaxValue && e.Start.Value > e.Value + current.Value)
+                        NewStep(new Step(edge, smallHiglightColor));
+                        NewStep(new Step(edge.Start, smallHiglightColor));
+                        if (current.Value != int.MaxValue && edge.Start.Value > edge.Value + current.Value)
                         {
-                            e.Start.Value = e.Value + current.Value;
-                            NewStep(new Step(e.Start, e.Start.Value + ""));
+                            edge.Start.Value = edge.Value + current.Value;
+                            NewStep(new Step(edge.Start, edge.Start.Value + ""));
                         }
-                        NewStep(new Step(e.Start, vertexBaseColor, e.Start.Value +""));
-                        NewStep(new Step(e, edgeBaseColor));
+                        NewStep(new Step(edge.Start, nodeBaseColor, edge.Start.Value +""));
+                        NewStep(new Step(edge, edgeBaseColor));
                     }
                 }
                 NewStep(new Step(current, bigHiglightColor));
@@ -526,11 +484,11 @@ namespace Graphs
         private void Jarnik()
         {
             EdgeMinHeap edgeHeap = new EdgeMinHeap(edges.Count());
-            foreach(Edge e in startingVertex.VertexEdges)
+            foreach(Edge edge in startingNode.NodeEdges)
             {
-                edgeHeap.Add(e);
+                edgeHeap.Add(edge);
             }
-            startingVertex.Visited = true;
+            startingNode.Visited = true;
             while (!(edgeHeap.IsEmpty()))
             {
                 Edge currentEdge = edgeHeap.Pop();
@@ -538,11 +496,11 @@ namespace Graphs
                 {
                     NewStep(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
                     currentEdge.End.Visited = true;
-                    foreach (Edge e in currentEdge.End.VertexEdges)
+                    foreach (Edge edge in currentEdge.End.NodeEdges)
                     {
-                        if (e.Start.Visited == false || e.End.Visited == false)
+                        if (edge.Start.Visited == false || edge.End.Visited == false)
                         {
-                            edgeHeap.Add(e);
+                            edgeHeap.Add(edge);
                         }
                     }
                 }
@@ -550,11 +508,11 @@ namespace Graphs
                 {
                     NewStep(new Step(currentEdge, bigHiglightColor, currentEdge.Value + ""));
                     currentEdge.Start.Visited = true;
-                    foreach (Edge e in currentEdge.Start.VertexEdges)
+                    foreach (Edge edge in currentEdge.Start.NodeEdges)
                     {
-                        if (e.Start.Visited == false || e.End.Visited == false)
+                        if (edge.Start.Visited == false || edge.End.Visited == false)
                         {
-                            edgeHeap.Add(e);
+                            edgeHeap.Add(edge);
                         }
                     }
                 }
@@ -570,55 +528,44 @@ namespace Graphs
         //Borůvkův algoritmus MST
         private void Boruvka()
         {
-            int treeCount = vertexes.Count();
+            int treeCount = nodes.Count();
             while(treeCount > 1)
             {
-                foreach(Edge e in edges)
+                foreach(Edge edge in edges)
                 {
-                    if (!(e.Start.PartOfSubset.Equals(e.End.PartOfSubset)))
+                    if (!(edge.Start.PartOfSubset.Equals(edge.End.PartOfSubset)))
                     {
-                        if (e.Start.PartOfSubset.ShortestEdge == null || e.Value < e.Start.PartOfSubset.ShortestEdge.Value)
+                        if (edge.Start.PartOfSubset.ImportantEdge == null || edge.Value < edge.Start.PartOfSubset.ImportantEdge.Value)
                         {
-                            e.Start.PartOfSubset.ShortestEdge = e;
+                            edge.Start.PartOfSubset.ImportantEdge = edge;
                         }
-                        if (e.End.PartOfSubset.ShortestEdge == null || e.Value < e.End.PartOfSubset.ShortestEdge.Value)
+                        if (edge.End.PartOfSubset.ImportantEdge == null || edge.Value < edge.End.PartOfSubset.ImportantEdge.Value)
                         {
-                            e.End.PartOfSubset.ShortestEdge = e;
+                            edge.End.PartOfSubset.ImportantEdge = edge;
                         }
-                    }
-                }
-                foreach (Vertex v in vertexes)
-                {
-                    if (v.ShortestEdge != null)
-                    {
-                        Console.WriteLine(v.ShortestEdge.Value);
                     }
                 }
                 Console.WriteLine("");
-                foreach (Vertex v in vertexes)
+                foreach (Node node in nodes)
                 {
-                    if (v.ShortestEdge != null)
+                    if (node.ImportantEdge != null)
                     {
-                        if (!(v.ShortestEdge.Start.PartOfSubset.Equals(v.ShortestEdge.End.PartOfSubset)))
+                        if (!(node.ImportantEdge.Start.PartOfSubset.Equals(node.ImportantEdge.End.PartOfSubset)))
                         {
-                            NewStep(new Step(v.ShortestEdge, mediumHiglightColor));
-                            if (v.ShortestEdge.Start.PartOfSubset.Equals(v))
+                            NewStep(new Step(node.ImportantEdge, mediumHiglightColor));
+                            if (node.ImportantEdge.Start.PartOfSubset.Equals(node))
                             {
-                                v.ShortestEdge.Start.PartOfSubset.PartOfSubset = v.ShortestEdge.End.PartOfSubset;
+                                node.ImportantEdge.Start.PartOfSubset.PartOfSubset = node.ImportantEdge.End.PartOfSubset;
                             }
                             else
                             {
-                                v.ShortestEdge.End.PartOfSubset.PartOfSubset = v.ShortestEdge.Start.PartOfSubset;
+                                node.ImportantEdge.End.PartOfSubset.PartOfSubset = node.ImportantEdge.Start.PartOfSubset;
                             }
                             treeCount--;
                         }
-                        v.ShortestEdge = null;
+                        node.ImportantEdge = null;
                     }
                 }
-            }
-            foreach (Vertex v in vertexes)
-            {
-                v.PartOfSubset = v;
             }
         }
 
@@ -628,11 +575,11 @@ namespace Graphs
         private void Kruskal()
         {
             EdgeMinHeap edgeHeap = new EdgeMinHeap(edges.Count());
-            foreach(Edge e in edges)
+            foreach(Edge edge in edges)
             {
-                edgeHeap.Add(e);
+                edgeHeap.Add(edge);
             }
-            int treeCount = vertexes.Count();
+            int treeCount = nodes.Count();
             while(treeCount > 1)
             {
                 Edge currentEdge = edgeHeap.Pop();
@@ -647,26 +594,134 @@ namespace Graphs
 
 
 
-        //Ford-Fulkersonův algoritmus MFP
-        private void FordFulkerson()
+        //Edmondsův-Karpův algoritmus MFP
+        private void EdmondsKarp()
         {
-            foreach(Edge e in edges)
+            foreach (Edge edge in edges)
             {
-                e.Text = "0";
-                e.ResidualValue = e.Value;
+                edge.Text = "0/" + edge.Value;
+                edge.ResidualValue = edge.Value;
             }
-            bool path = true;
-            while (path)
+            Stack<Edge> improvementPath = EKBFS();
+            while(improvementPath.Count() > 0)
             {
-                path = false;
+                
+                int improvement = int.MaxValue;
+                foreach(Edge edge in improvementPath)
+                {
+                    Console.WriteLine(edge.Value);
+                    NewStep(new Step(edge, mediumHiglightColor));
+                    if(edge.Reversed == false)
+                    {
+                        if (edge.ResidualValue < improvement)
+                        {
+                            improvement = edge.ResidualValue;
+                        }
+                    }
+                    else
+                    {
+                        if(edge.Value - edge.ResidualValue < improvement)
+                        {
+                            improvement = edge.Value - edge.ResidualValue;
+                        }
+                    }
+                }
+                
+                foreach (Edge edge in improvementPath)
+                {
+                    if (edge.Reversed == false)
+                    {
+                        edge.ResidualValue = edge.ResidualValue - improvement;
+                        NewStep(new Step(edge, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
+                    }
+                    else
+                    {
+                        edge.ResidualValue = edge.ResidualValue + improvement;
+                        NewStep(new Step(edge, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
+                    }
+                }
+                foreach (Edge edge in improvementPath)
+                {
+                    NewStep(new Step(edge, edgeBaseColor));
+                }
+                improvementPath = EKBFS();
             }
         }
-
-
-
-        private bool FFBFS()
+        private Stack<Edge> EKBFS()
         {
-            return true;
+            Stack<Edge> path = new Stack<Edge>();
+            foreach (Node node in nodes)
+            {
+                node.Visited = false;
+                node.ImportantEdge = null;
+            }
+            foreach (Edge edge in edges)
+            {
+                edge.Reversed = false;
+            }
+            Queue<Node> nodeQueue = new Queue<Node>();
+
+            nodeQueue.Enqueue(startingNode);
+            startingNode.Visited = true;
+
+            while(nodeQueue.Count() != 0)
+            {
+                Node currentNode = nodeQueue.Dequeue();
+
+                foreach(Edge edge in currentNode.NodeEdges)
+                {
+                    if(edge.Start.Equals(currentNode) && edge.End.Visited == false && edge.ResidualValue > 0)
+                    {
+                        nodeQueue.Enqueue(edge.End);
+                        edge.End.ImportantEdge = edge;
+                        edge.End.Visited = true;
+                        if (edge.End.Equals(sinkNode))
+                        {
+                            Node currentPathNode = sinkNode;
+
+                            while (currentPathNode.ImportantEdge != null)
+                            {
+                                path.Push(currentPathNode.ImportantEdge);
+                                if (currentPathNode.ImportantEdge.End.Equals(currentPathNode))
+                                {
+                                    currentPathNode = currentPathNode.ImportantEdge.Start;
+                                }
+                                else
+                                {
+                                    currentPathNode = currentPathNode.ImportantEdge.End;
+                                }
+                            }
+                            return path;
+                        }
+                    }
+                    else if(edge.End.Equals(currentNode) && edge.Start.Visited == false && edge.ResidualValue < edge.Value)
+                    {
+                        nodeQueue.Enqueue(edge.Start);
+                        edge.Start.ImportantEdge = edge;
+                        edge.Start.Visited = true;
+                        edge.Reversed = true;
+                        if (edge.Start.Equals(sinkNode))
+                        {
+                            Node currentPathNode = sinkNode;
+
+                            while (currentPathNode.ImportantEdge != null)
+                            {
+                                path.Push(currentPathNode.ImportantEdge);
+                                if (currentPathNode.ImportantEdge.End.Equals(currentPathNode))
+                                {
+                                    currentPathNode = currentPathNode.ImportantEdge.Start;
+                                }
+                                else
+                                {
+                                    currentPathNode = currentPathNode.ImportantEdge.End;
+                                }
+                            }
+                            return path;
+                        }
+                    }
+                }
+            }
+            return path;
         }
 
         
@@ -680,14 +735,14 @@ namespace Graphs
         //Recolor
         public void Recolor()
         {
-            foreach(Edge e in edges)
+            foreach(Edge edge in edges)
             {
-                e.Color = edgeBaseColor;
-                e.TextColor = textBaseColor;
+                edge.Color = edgeBaseColor;
+                edge.TextColor = textBaseColor;
             }
-            foreach(Vertex v in vertexes)
+            foreach(Node node in nodes)
             {
-                v.Color = vertexBaseColor;
+                node.Color = nodeBaseColor;
             }
             RefreshCanvas();
         }
@@ -732,21 +787,21 @@ namespace Graphs
         //Řeší focusy a výběry ve formě
         private void ClickFunctionChange(object sender, EventArgs e)
         {
-            firstVertexOfNewEdge = null;
-            movingVertex = null;
+            firstNodeOfNewEdge = null;
+            movingNode = null;
             foreach (Edge edge in edges)
             {
                 edge.Color = edgeBaseColor;
                 edge.TextColor = textBaseColor;
             }
-            foreach (Vertex vertex in vertexes)
+            foreach (Node node in nodes)
             {
-                vertex.Color = vertexBaseColor;
+                node.Color = nodeBaseColor;
             }
-            if (clickFunctionStartingVertex.SelectedIndex == 0 || clickFunctionStartingVertex.SelectedIndex == 1)
+            if (clickFunctionStartingNode.SelectedIndex == 0 || clickFunctionStartingNode.SelectedIndex == 1)
             {
-                startingVertex.Color = mediumHiglightColor;
-                sinkVertex.Color = bigHiglightColor;
+                startingNode.Color = mediumHiglightColor;
+                sinkNode.Color = bigHiglightColor;
             }
             if (clickFunctionEdge.SelectedIndex == 0 || clickFunctionEdge.SelectedIndex == 1)
             {
@@ -841,6 +896,12 @@ namespace Graphs
             {
                 edge.Text = edge.Value + "";
             }
+            RefreshCanvas();
+        }
+
+        private void directedCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            directed = !directed;
             RefreshCanvas();
         }
     }
