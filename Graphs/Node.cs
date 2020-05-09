@@ -53,17 +53,18 @@ namespace Graphs
 
         public void DrawNode(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(Color), new Rectangle(Position.X - Radius, Position.Y - Radius, 2 * Radius, 2 * Radius));
+            g.FillEllipse(new SolidBrush(Color), new Rectangle(Position.X - Radius + Canvas.canvasStartX, Position.Y - Radius + Canvas.canvasStartY, 2 * Radius, 2 * Radius));
         }
 
         public void DrawText(Graphics g)
         {
             Brush b = new SolidBrush(Color);
-            g.DrawString(Text, new Font("Verdana", 10), b, Position.X + 2, Position.Y + 2);
+            g.DrawString(Text, new Font("Verdana", 10), b, Position.X + 2 + Canvas.canvasStartX, Position.Y + 2 + Canvas.canvasStartY);
         }
 
         public bool Clicked(Point click)
         {
+            click = new Point(click.X - Canvas.canvasStartX, click.Y - Canvas.canvasStartY);
             int diffx = Position.X - click.X;
             int diffy = Position.Y - click.Y;
             if (Math.Sqrt(diffx * diffx + diffy * diffy) <= Radius)

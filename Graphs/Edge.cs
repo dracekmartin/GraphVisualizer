@@ -60,23 +60,24 @@ namespace Graphs
             {
                 AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * Width, Width);
                 p.CustomEndCap = aab;
-                g.DrawLine(p, Start.Position, End.Position);
+                g.DrawLine(p, Start.Position.X + Canvas.canvasStartX, Start.Position.Y + Canvas.canvasStartY, End.Position.X + Canvas.canvasStartX, End.Position.Y + Canvas.canvasStartY);
             }
             else
             {
-                g.DrawLine(p, Start.Position, End.Position);
+                g.DrawLine(p, Start.Position.X + Canvas.canvasStartX, Start.Position.Y + Canvas.canvasStartY, End.Position.X + Canvas.canvasStartX, End.Position.Y + Canvas.canvasStartY);
             }
         }
 
         public void DrawText(Graphics g)
         {
-            g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2, (Start.Position.Y + End.Position.Y) / 2));
+            g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2 + Canvas.canvasStartX, (Start.Position.Y + End.Position.Y) / 2 + Canvas.canvasStartY));
         }
 
 
         //WIP
         public bool Clicked(Point click)
         {
+            click = new Point(click.X - Canvas.canvasStartX, click.Y - Canvas.canvasStartY);
             if ((click.X > Start.Position.X + Width && click.X > End.Position.X + Width) ||
                 (click.X < Start.Position.X - Width && click.X < End.Position.X - Width) ||
                 (click.Y > Start.Position.Y + Width && click.Y > End.Position.Y + Width) ||

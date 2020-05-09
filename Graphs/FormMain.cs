@@ -37,6 +37,8 @@ namespace Graphs
         Node sinkNode = null;
         public bool euclidean = false;
         public bool directed = false;
+        public int canvasStartX = 0;
+        public int canvasStartY = 0;
         //Globální proměnné barev
         public Color nodeBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
@@ -91,6 +93,7 @@ namespace Graphs
         //Vykreslí všechny hrany a vrcholy z nodes a edges
         private void Graph_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             foreach (Edge edge in edges)
             {
                 edge.DrawEdge(e.Graphics);
@@ -146,7 +149,7 @@ namespace Graphs
             {
                 if(e.Button == MouseButtons.Left)
                 {
-                    nodes.Add(new Node(this, e.Location, nodeBaseColor));
+                    nodes.Add(new Node(this, new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor));
                 }
                 else if(e.Button == MouseButtons.Right)
                 {
@@ -327,6 +330,34 @@ namespace Graphs
             RefreshCanvas();
         }
 
+        Point dragStart;
+        Point dragEnd;
+        private void graph_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (clickFunctionClick.SelectedIndex == 1 && e.Button == MouseButtons.Left)
+            {
+                dragStart = e.Location;
+                dragEnd = e.Location;
+            }
+        }
+
+        private void graph_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (clickFunctionClick.SelectedIndex == 1 && e.Button == MouseButtons.Left)
+            {
+                dragEnd = e.Location;
+            }
+        }
+
+        private void graph_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (clickFunctionClick.SelectedIndex == 1 && e.Button == MouseButtons.Left)
+            {
+                canvasStartX += dragEnd.X - dragStart.X;
+                canvasStartY += dragEnd.Y - dragStart.Y;
+                RefreshCanvas();
+            }
+        }
 
 
         //Začne algoritmus a resetuje graf
@@ -918,5 +949,7 @@ namespace Graphs
             directed = !directed;
             RefreshCanvas();
         }
+
+        
     }
 }

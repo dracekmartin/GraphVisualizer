@@ -141,10 +141,11 @@
             // 
             this.clickFunctionClick.FormattingEnabled = true;
             this.clickFunctionClick.Items.AddRange(new object[] {
-            "Click"});
+            "Click",
+            "Drag"});
             this.clickFunctionClick.Location = new System.Drawing.Point(3, 16);
             this.clickFunctionClick.Name = "clickFunctionClick";
-            this.clickFunctionClick.Size = new System.Drawing.Size(131, 17);
+            this.clickFunctionClick.Size = new System.Drawing.Size(131, 30);
             this.clickFunctionClick.TabIndex = 1;
             this.clickFunctionClick.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionClick.Leave += new System.EventHandler(this.ClickFunction_Leave);
@@ -235,14 +236,14 @@
             this.startAlgButton.UseVisualStyleBackColor = true;
             this.startAlgButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // clickFunctionStartingVertex
+            // clickFunctionStartingNode
             // 
             this.clickFunctionStartingNode.FormattingEnabled = true;
             this.clickFunctionStartingNode.Items.AddRange(new object[] {
             "Choose starting point",
             "Choose sink"});
             this.clickFunctionStartingNode.Location = new System.Drawing.Point(143, 16);
-            this.clickFunctionStartingNode.Name = "clickFunctionStartingVertex";
+            this.clickFunctionStartingNode.Name = "clickFunctionStartingNode";
             this.clickFunctionStartingNode.Size = new System.Drawing.Size(131, 30);
             this.clickFunctionStartingNode.TabIndex = 6;
             this.clickFunctionStartingNode.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
@@ -302,6 +303,9 @@
             this.graph.TabStop = false;
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
             this.graph.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseClick);
+            this.graph.MouseDown += new System.Windows.Forms.MouseEventHandler(this.graph_MouseDown);
+            this.graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.graph_MouseMove);
+            this.graph.MouseUp += new System.Windows.Forms.MouseEventHandler(this.graph_MouseUp);
             // 
             // FormMain
             // 
