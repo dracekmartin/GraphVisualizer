@@ -9,7 +9,7 @@ namespace Graphs
     public partial class FormMain : Form
     {
         //Defaultní graf
-        readonly Point[] defaultNodePosition = new Point[]{
+        readonly Point[] defaultNodePositions = new Point[]{
             new Point(150*3,100*3),
             new Point(140*3,140*3),
             new Point(160*3,140*3),
@@ -61,7 +61,7 @@ namespace Graphs
         private void OnStart()
         {
             //Načtení defaultního grafu
-            foreach (Point iterPoint in defaultNodePosition)
+            foreach (Point iterPoint in defaultNodePositions)
             {
                 nodes.Add(new Node(this, iterPoint, nodeBaseColor));
             }
@@ -97,10 +97,10 @@ namespace Graphs
                 edge.DrawText(e.Graphics);
             }
 
-            foreach (Node Node in nodes)
+            foreach (Node nodes in nodes)
             {
-                Node.DrawNode(e.Graphics);
-                Node.DrawText(e.Graphics);
+                nodes.DrawNode(e.Graphics);
+                nodes.DrawText(e.Graphics);
             }
         }
 
@@ -545,6 +545,13 @@ namespace Graphs
                         }
                     }
                 }
+                foreach (Node node in nodes)
+                {
+                    if (node.ImportantEdge != null)
+                    {
+                        Console.WriteLine(node.ImportantEdge.Value);
+                    }
+                }
                 Console.WriteLine("");
                 foreach (Node node in nodes)
                 {
@@ -566,6 +573,10 @@ namespace Graphs
                         node.ImportantEdge = null;
                     }
                 }
+            }
+            foreach (Node node in nodes)
+            {
+                node.PartOfSubset = node;
             }
         }
 
@@ -647,6 +658,9 @@ namespace Graphs
                 improvementPath = EKBFS();
             }
         }
+
+
+
         private Stack<Edge> EKBFS()
         {
             Stack<Edge> path = new Stack<Edge>();

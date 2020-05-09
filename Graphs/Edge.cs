@@ -9,7 +9,6 @@ namespace Graphs
     {
         public Node Start;
         public Node End;
-        public Color TextColor;
         public int Width;
 
         private int hidden_Value;
@@ -32,9 +31,9 @@ namespace Graphs
             }
         }
 
-        public int ResidualValue;
-
         public int ReverseValue;
+
+        public int ResidualValue;
 
         public bool Reversed;
 

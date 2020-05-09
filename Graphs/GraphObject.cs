@@ -7,5 +7,6 @@ namespace Graphs
         public FormMain Canvas;
         public Color Color;
         public string Text;
+        public Color TextColor;
     }
 }

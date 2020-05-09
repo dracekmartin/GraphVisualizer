@@ -235,14 +235,14 @@
             this.startAlgButton.UseVisualStyleBackColor = true;
             this.startAlgButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // clickFunctionStartingNode
+            // clickFunctionStartingVertex
             // 
             this.clickFunctionStartingNode.FormattingEnabled = true;
             this.clickFunctionStartingNode.Items.AddRange(new object[] {
             "Choose starting point",
             "Choose sink"});
             this.clickFunctionStartingNode.Location = new System.Drawing.Point(143, 16);
-            this.clickFunctionStartingNode.Name = "clickFunctionStartingNode";
+            this.clickFunctionStartingNode.Name = "clickFunctionStartingVertex";
             this.clickFunctionStartingNode.Size = new System.Drawing.Size(131, 30);
             this.clickFunctionStartingNode.TabIndex = 6;
             this.clickFunctionStartingNode.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
