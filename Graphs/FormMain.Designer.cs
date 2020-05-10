@@ -162,7 +162,7 @@
             this.groupBoxAlg.Controls.Add(this.clickFunctionStartingNode);
             this.groupBoxAlg.Location = new System.Drawing.Point(452, 3);
             this.groupBoxAlg.Name = "groupBoxAlg";
-            this.groupBoxAlg.Size = new System.Drawing.Size(361, 110);
+            this.groupBoxAlg.Size = new System.Drawing.Size(361, 117);
             this.groupBoxAlg.TabIndex = 5;
             this.groupBoxAlg.TabStop = false;
             this.groupBoxAlg.Text = "Algorithms";
@@ -219,10 +219,11 @@
             "Jarník",
             "Borůvka",
             "Kruskal",
-            "Edmonds-Karp"});
+            "Edmonds-Karp",
+            "Dinic"});
             this.algorithmSelection.Location = new System.Drawing.Point(6, 16);
             this.algorithmSelection.Name = "algorithmSelection";
-            this.algorithmSelection.Size = new System.Drawing.Size(131, 69);
+            this.algorithmSelection.Size = new System.Drawing.Size(131, 82);
             this.algorithmSelection.TabIndex = 5;
             // 
             // startAlgButton

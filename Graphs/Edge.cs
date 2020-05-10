@@ -31,11 +31,9 @@ namespace Graphs
             }
         }
 
-        public int ReverseValue;
-
         public int ResidualValue;
 
-        public bool Reversed;
+        public bool Reverse;
 
         
 

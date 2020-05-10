@@ -9,32 +9,33 @@ namespace Graphs
         public GraphObject Go;
         public Color Color;
         public string Text;
+        public bool massStep;
         
 
         public Step StepBefore;
         public Step StepAfter;
-        public bool Reversed;
+        public bool Reversed = false;
 
-        public Step(GraphObject init_go, Color init_color)
+        public Step(GraphObject init_go, bool init_massStep, Color init_color)
         {
             Go = init_go;
             Color = init_color;
             Text = null;
-            Reversed = false;
+            massStep = init_massStep;
         }
-        public Step(GraphObject init_go, string init_text)
+        public Step(GraphObject init_go, bool init_massStep, string init_text)
         {
             Go = init_go;
             Text = init_text;
             Color = Color.Empty;
-            Reversed = false;
+            massStep = init_massStep;
         }
-        public Step(GraphObject init_go, Color init_color, string init_text)
+        public Step(GraphObject init_go, bool init_massStep, Color init_color, string init_text)
         {
             Go = init_go;
             Color = init_color;
             Text = init_text;
-            Reversed = false;
+            massStep = init_massStep;
         }
 
         public void Complete()
