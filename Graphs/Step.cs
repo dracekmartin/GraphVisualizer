@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Drawing;
 
 namespace Graphs
 {
@@ -11,7 +9,6 @@ namespace Graphs
         public string Text;
         public bool massStep;
         
-
         public Step StepBefore;
         public Step StepAfter;
         public bool Reversed = false;

@@ -149,7 +149,8 @@ namespace Graphs
             {
                 if(e.Button == MouseButtons.Left)
                 {
-                    nodes.Add(new Node(this, new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor));
+                    Node newNode = new Node(this, new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor);
+                    nodes.Add(newNode);
                 }
                 else if(e.Button == MouseButtons.Right)
                 {
@@ -166,20 +167,11 @@ namespace Graphs
                             nodes.Remove(node);
                             if (startingNode == node)
                             {
-                                foreach (Node newStartingNode in nodes)
-                                {
-                                    startingNode = newStartingNode;
-                                }
+                                startingNode = null;
                             }
-                            if (sinkNode == node)
+                            else if (sinkNode == node)
                             {
-                                foreach (Node newStartingNode in nodes)
-                                {
-                                    if (startingNode != node)
-                                    {
-                                        startingNode = newStartingNode;
-                                    }
-                                }
+                                sinkNode = null;
                             }
                             break;
                         }
@@ -696,7 +688,7 @@ namespace Graphs
         }
 
 
-
+        //WIP
         private Stack<Edge> EKBFS()
         {
             Stack<Edge> path = new Stack<Edge>();
@@ -884,7 +876,7 @@ namespace Graphs
         }
 
         //Recolor
-        public void Recolor()
+        public void RecolorToBase()
         {
             foreach(Edge edge in edges)
             {
@@ -898,7 +890,7 @@ namespace Graphs
             RefreshCanvas();
         }
 
-        //New step
+        //Takes care of creating the first step
         public void NewStep(Step newStep)
         {
             
@@ -914,7 +906,7 @@ namespace Graphs
             }
         }
 
-        //Krokovač algoritmů
+        //Performs steps of algorithms
         private void StepWait(object sender, EventArgs e)
         {
             if (currentStep.StepAfter != null)
@@ -941,61 +933,10 @@ namespace Graphs
             }
         }
 
-        //Řeší focusy a výběry ve formě
-        private void ClickFunctionChange(object sender, EventArgs e)
-        {
-            firstNodeOfNewEdge = null;
-            movingNode = null;
-            foreach (Edge edge in edges)
-            {
-                edge.Color = edgeBaseColor;
-                edge.TextColor = textBaseColor;
-            }
-            foreach (Node node in nodes)
-            {
-                node.Color = nodeBaseColor;
-            }
-            if (clickFunctionStartingNode.SelectedIndex == 0 || clickFunctionStartingNode.SelectedIndex == 1)
-            {
-                startingNode.Color = mediumHiglightColor;
-                sinkNode.Color = bigHiglightColor;
-            }
-            if (clickFunctionEdge.SelectedIndex == 0 || clickFunctionEdge.SelectedIndex == 1)
-            {
-                edgeValueInput.Enabled = true;
-                edgeValueInput.Focus();
-                edgeValueInput.SelectAll();
-            }
-            else
-            {
-                edgeValueInput.Enabled = false;
-            }
-            graph.Refresh();
-        }
-
-        private void ClickFunction_Leave(object sender, EventArgs e)
-        {
-            if (edgeValueInput.Focused == false)
-            {
-                ((ListBox)sender).ClearSelected();
-            }
-        }
-
-        private void EdgeValueInput_Leave(object sender, EventArgs e)
-        {
-            clickFunctionEdge.ClearSelected();
-        }
-
-        private void SettingsButton_Click(object sender, EventArgs e)
-        {
-            this.Enabled = false;
-            FormSettings fs = new FormSettings(this);
-            fs.ShowDialog();
-        }
-
+        //On click functions of algorithm buttons
         private void pauseButton_Click(object sender, EventArgs e)
         {
-            if(((Button)sender).Text == "Pause")
+            if (((Button)sender).Text == "Pause")
             {
                 t.Enabled = false;
                 ((Button)sender).Text = "Go";
@@ -1037,7 +978,7 @@ namespace Graphs
         {
             if (currentStep.StepBefore != null)
             {
-                if(currentStep.StepAfter == null && currentStep.Reversed == true)
+                if (currentStep.StepAfter == null && currentStep.Reversed == true)
                 {
                     currentStep.Complete();
                 }
@@ -1054,6 +995,52 @@ namespace Graphs
             }
         }
 
+        //Makes sure only one click function is selected at a time and enables edge value input when appropriate
+        private void ClickFunctionChange(object sender, EventArgs e)
+        {
+            firstNodeOfNewEdge = null;
+            movingNode = null;
+            RecolorToBase();
+            if (clickFunctionStartingNode.SelectedIndex == 0 || clickFunctionStartingNode.SelectedIndex == 1)
+            {
+                startingNode.Color = mediumHiglightColor;
+                sinkNode.Color = bigHiglightColor;
+            }
+            if (clickFunctionEdge.SelectedIndex == 0 || clickFunctionEdge.SelectedIndex == 1)
+            {
+                edgeValueInput.Enabled = true;
+                edgeValueInput.Focus();
+                edgeValueInput.SelectAll();
+            }
+            else
+            {
+                edgeValueInput.Enabled = false;
+            }
+            graph.Refresh();
+        }
+
+        private void ClickFunctionLeaveFocus(object sender, EventArgs e)
+        {
+            if (edgeValueInput.Focused == false)
+            {
+                ((ListBox)sender).ClearSelected();
+            }
+        }
+
+        private void EdgeValueInput_Leave(object sender, EventArgs e)
+        {
+            clickFunctionEdge.ClearSelected();
+        }
+
+        //Creates a settings form
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+            FormSettings fs = new FormSettings(this);
+            fs.ShowDialog();
+        }
+
+        //Sets length of all edges to their real length
         private void euclideanSpaceCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             euclidean = !euclidean;
@@ -1064,12 +1051,11 @@ namespace Graphs
             RefreshCanvas();
         }
 
+        //Makes the graph directed
         private void directedCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             directed = !directed;
             RefreshCanvas();
         }
-
-        
     }
 }
