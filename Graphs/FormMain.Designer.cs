@@ -36,23 +36,27 @@
             this.edgeValueInput = new System.Windows.Forms.MaskedTextBox();
             this.clickFunctionClick = new System.Windows.Forms.ListBox();
             this.groupBoxAlg = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.algorithmSelectionMF = new System.Windows.Forms.ListBox();
+            this.algorithmSelectionMST = new System.Windows.Forms.ListBox();
             this.backstepButton = new System.Windows.Forms.Button();
             this.stepButton = new System.Windows.Forms.Button();
             this.pauseButton = new System.Windows.Forms.Button();
             this.waitTimeInput = new System.Windows.Forms.TrackBar();
-            this.algorithmSelection = new System.Windows.Forms.ListBox();
+            this.algorithmSelectionSP = new System.Windows.Forms.ListBox();
             this.startAlgButton = new System.Windows.Forms.Button();
             this.clickFunctionStartingNode = new System.Windows.Forms.ListBox();
             this.groupBoxOthers = new System.Windows.Forms.GroupBox();
+            this.saveGraphButton = new System.Windows.Forms.Button();
             this.directedCheckBox = new System.Windows.Forms.CheckBox();
             this.euclideanSpaceCheckBox = new System.Windows.Forms.CheckBox();
             this.settingsButton = new System.Windows.Forms.Button();
             this.graph = new System.Windows.Forms.PictureBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.loadGraphButton = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
             this.groupBoxGraphCreation.SuspendLayout();
@@ -161,13 +165,13 @@
             this.groupBoxAlg.Controls.Add(this.label3);
             this.groupBoxAlg.Controls.Add(this.label2);
             this.groupBoxAlg.Controls.Add(this.label1);
-            this.groupBoxAlg.Controls.Add(this.listBox2);
-            this.groupBoxAlg.Controls.Add(this.listBox1);
+            this.groupBoxAlg.Controls.Add(this.algorithmSelectionMF);
+            this.groupBoxAlg.Controls.Add(this.algorithmSelectionMST);
             this.groupBoxAlg.Controls.Add(this.backstepButton);
             this.groupBoxAlg.Controls.Add(this.stepButton);
             this.groupBoxAlg.Controls.Add(this.pauseButton);
             this.groupBoxAlg.Controls.Add(this.waitTimeInput);
-            this.groupBoxAlg.Controls.Add(this.algorithmSelection);
+            this.groupBoxAlg.Controls.Add(this.algorithmSelectionSP);
             this.groupBoxAlg.Controls.Add(this.startAlgButton);
             this.groupBoxAlg.Controls.Add(this.clickFunctionStartingNode);
             this.groupBoxAlg.Location = new System.Drawing.Point(452, 3);
@@ -177,6 +181,58 @@
             this.groupBoxAlg.TabStop = false;
             this.groupBoxAlg.Text = "Algorithms";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(277, 16);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Maximum flow";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(140, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(115, 13);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Minimum spanning tree";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Shortest path";
+            // 
+            // algorithmSelectionMF
+            // 
+            this.algorithmSelectionMF.FormattingEnabled = true;
+            this.algorithmSelectionMF.Items.AddRange(new object[] {
+            "Edmonds-Karp",
+            "Dinic"});
+            this.algorithmSelectionMF.Location = new System.Drawing.Point(280, 32);
+            this.algorithmSelectionMF.Name = "algorithmSelectionMF";
+            this.algorithmSelectionMF.Size = new System.Drawing.Size(131, 30);
+            this.algorithmSelectionMF.TabIndex = 13;
+            this.algorithmSelectionMF.Enter += new System.EventHandler(this.algorithmSelection_Enter);
+            // 
+            // algorithmSelectionMST
+            // 
+            this.algorithmSelectionMST.FormattingEnabled = true;
+            this.algorithmSelectionMST.Items.AddRange(new object[] {
+            "Jarník",
+            "Borůvka",
+            "Kruskal"});
+            this.algorithmSelectionMST.Location = new System.Drawing.Point(143, 32);
+            this.algorithmSelectionMST.Name = "algorithmSelectionMST";
+            this.algorithmSelectionMST.Size = new System.Drawing.Size(131, 43);
+            this.algorithmSelectionMST.TabIndex = 12;
+            this.algorithmSelectionMST.Enter += new System.EventHandler(this.algorithmSelection_Enter);
+            // 
             // backstepButton
             // 
             this.backstepButton.Location = new System.Drawing.Point(554, 68);
@@ -185,7 +241,7 @@
             this.backstepButton.TabIndex = 11;
             this.backstepButton.Text = "<-";
             this.backstepButton.UseVisualStyleBackColor = true;
-            this.backstepButton.Click += new System.EventHandler(this.backstepButton_Click);
+            this.backstepButton.Click += new System.EventHandler(this.BackstepButton_Click);
             // 
             // stepButton
             // 
@@ -195,7 +251,7 @@
             this.stepButton.TabIndex = 10;
             this.stepButton.Text = "->";
             this.stepButton.UseVisualStyleBackColor = true;
-            this.stepButton.Click += new System.EventHandler(this.stepButton_Click);
+            this.stepButton.Click += new System.EventHandler(this.StepButton_Click);
             // 
             // pauseButton
             // 
@@ -206,7 +262,7 @@
             this.pauseButton.TabIndex = 9;
             this.pauseButton.Text = "Pause";
             this.pauseButton.UseVisualStyleBackColor = true;
-            this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+            this.pauseButton.Click += new System.EventHandler(this.PauseButton_Click);
             // 
             // waitTimeInput
             // 
@@ -221,15 +277,16 @@
             this.waitTimeInput.TabIndex = 7;
             this.waitTimeInput.Value = 100;
             // 
-            // algorithmSelection
+            // algorithmSelectionSP
             // 
-            this.algorithmSelection.FormattingEnabled = true;
-            this.algorithmSelection.Items.AddRange(new object[] {
+            this.algorithmSelectionSP.FormattingEnabled = true;
+            this.algorithmSelectionSP.Items.AddRange(new object[] {
             "Dijsktra"});
-            this.algorithmSelection.Location = new System.Drawing.Point(6, 32);
-            this.algorithmSelection.Name = "algorithmSelection";
-            this.algorithmSelection.Size = new System.Drawing.Size(131, 17);
-            this.algorithmSelection.TabIndex = 5;
+            this.algorithmSelectionSP.Location = new System.Drawing.Point(6, 32);
+            this.algorithmSelectionSP.Name = "algorithmSelectionSP";
+            this.algorithmSelectionSP.Size = new System.Drawing.Size(131, 17);
+            this.algorithmSelectionSP.TabIndex = 5;
+            this.algorithmSelectionSP.Enter += new System.EventHandler(this.algorithmSelection_Enter);
             // 
             // startAlgButton
             // 
@@ -257,15 +314,28 @@
             // 
             // groupBoxOthers
             // 
+            this.groupBoxOthers.AutoSize = true;
+            this.groupBoxOthers.Controls.Add(this.saveGraphButton);
             this.groupBoxOthers.Controls.Add(this.directedCheckBox);
             this.groupBoxOthers.Controls.Add(this.euclideanSpaceCheckBox);
+            this.groupBoxOthers.Controls.Add(this.loadGraphButton);
             this.groupBoxOthers.Controls.Add(this.settingsButton);
             this.groupBoxOthers.Location = new System.Drawing.Point(1093, 3);
             this.groupBoxOthers.Name = "groupBoxOthers";
-            this.groupBoxOthers.Size = new System.Drawing.Size(200, 91);
+            this.groupBoxOthers.Size = new System.Drawing.Size(249, 104);
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
+            // 
+            // saveGraphButton
+            // 
+            this.saveGraphButton.Location = new System.Drawing.Point(87, 16);
+            this.saveGraphButton.Name = "saveGraphButton";
+            this.saveGraphButton.Size = new System.Drawing.Size(75, 23);
+            this.saveGraphButton.TabIndex = 9;
+            this.saveGraphButton.Text = "Save graph";
+            this.saveGraphButton.UseVisualStyleBackColor = true;
+            this.saveGraphButton.Click += new System.EventHandler(this.SaveGraphButton_Click);
             // 
             // directedCheckBox
             // 
@@ -276,7 +346,7 @@
             this.directedCheckBox.TabIndex = 8;
             this.directedCheckBox.Text = "Directed graph";
             this.directedCheckBox.UseVisualStyleBackColor = true;
-            this.directedCheckBox.CheckedChanged += new System.EventHandler(this.directedCheckBox_CheckedChanged);
+            this.directedCheckBox.CheckedChanged += new System.EventHandler(this.DirectedCheckBox_CheckedChanged);
             // 
             // euclideanSpaceCheckBox
             // 
@@ -287,7 +357,7 @@
             this.euclideanSpaceCheckBox.TabIndex = 7;
             this.euclideanSpaceCheckBox.Text = "Euclidean distances";
             this.euclideanSpaceCheckBox.UseVisualStyleBackColor = true;
-            this.euclideanSpaceCheckBox.CheckedChanged += new System.EventHandler(this.euclideanSpaceCheckBox_CheckedChanged);
+            this.euclideanSpaceCheckBox.CheckedChanged += new System.EventHandler(this.EuclideanSpaceCheckBox_CheckedChanged);
             // 
             // settingsButton
             // 
@@ -309,59 +379,30 @@
             this.graph.TabStop = false;
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
             this.graph.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseClick);
-            this.graph.MouseDown += new System.Windows.Forms.MouseEventHandler(this.graph_MouseDown);
-            this.graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.graph_MouseMove);
-            this.graph.MouseUp += new System.Windows.Forms.MouseEventHandler(this.graph_MouseUp);
+            this.graph.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseDown);
+            this.graph.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseMove);
+            this.graph.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Graph_MouseUp);
             // 
-            // listBox1
+            // saveFileDialog1
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Items.AddRange(new object[] {
-            "Jarník",
-            "Borůvka",
-            "Kruskal"});
-            this.listBox1.Location = new System.Drawing.Point(143, 32);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(131, 43);
-            this.listBox1.TabIndex = 12;
+            this.saveFileDialog1.Filter = "GraphML file|*.graphml";
+            this.saveFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
             // 
-            // listBox2
+            // loadGraphButton
             // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Items.AddRange(new object[] {
-            "Edmonds-Karp",
-            "Dinic"});
-            this.listBox2.Location = new System.Drawing.Point(280, 32);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(131, 30);
-            this.listBox2.TabIndex = 13;
+            this.loadGraphButton.Location = new System.Drawing.Point(168, 16);
+            this.loadGraphButton.Name = "loadGraphButton";
+            this.loadGraphButton.Size = new System.Drawing.Size(75, 23);
+            this.loadGraphButton.TabIndex = 10;
+            this.loadGraphButton.Text = "Load graph";
+            this.loadGraphButton.UseVisualStyleBackColor = true;
+            this.loadGraphButton.Click += new System.EventHandler(this.loadGraphButton_Click);
             // 
-            // label1
+            // openFileDialog1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Shortest path";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(140, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(115, 13);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "Minimum spanning tree";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(277, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 16;
-            this.label3.Text = "Maximum flow";
+            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog1.Filter = "GraphML file|*.graphml";
+            this.openFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
             // 
             // FormMain
             // 
@@ -397,7 +438,7 @@
         private System.Windows.Forms.MaskedTextBox edgeValueInput;
         private System.Windows.Forms.ListBox clickFunctionClick;
         private System.Windows.Forms.GroupBox groupBoxAlg;
-        private System.Windows.Forms.ListBox algorithmSelection;
+        private System.Windows.Forms.ListBox algorithmSelectionSP;
         private System.Windows.Forms.Button startAlgButton;
         private System.Windows.Forms.ListBox clickFunctionStartingNode;
         private System.Windows.Forms.PictureBox graph;
@@ -412,8 +453,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox algorithmSelectionMF;
+        private System.Windows.Forms.ListBox algorithmSelectionMST;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Button saveGraphButton;
+        private System.Windows.Forms.Button loadGraphButton;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

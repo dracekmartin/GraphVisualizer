@@ -10,12 +10,13 @@ namespace Graphs
         public Node End;
         public int Width;
 
+        public bool Euclidean = false;
         private int hidden_Value;
         public int Value
         {
             get
             {
-                if (Canvas.euclidean)
+                if (Euclidean)
                 {
                     return ((int)Math.Floor(Math.Sqrt((Math.Pow(Start.Position.X - End.Position.X, 2) + (Math.Pow(Start.Position.Y - End.Position.Y, 2))))));
                 }
@@ -48,35 +49,33 @@ namespace Graphs
             End = init_end;
             TextColor = init_textColor;
             Width = 5;
-
-            Canvas = init_canvas;
         }
 
-        public void DrawEdge(Graphics g)
+        public void DrawEdge(Graphics g, bool directed, int canvasStartX, int canvasStartY)
         {
             Pen p = new Pen(Color, Width);
-            if (Canvas.directed == true)
+            if (directed == true)
             {
                 AdjustableArrowCap aab = new AdjustableArrowCap(0.7f * Width, Width);
                 p.CustomEndCap = aab;
-                g.DrawLine(p, Start.Position.X + Canvas.canvasStartX, Start.Position.Y + Canvas.canvasStartY, End.Position.X + Canvas.canvasStartX, End.Position.Y + Canvas.canvasStartY);
+                g.DrawLine(p, Start.Position.X + canvasStartX, Start.Position.Y + canvasStartY, End.Position.X + canvasStartX, End.Position.Y + canvasStartY);
             }
             else
             {
-                g.DrawLine(p, Start.Position.X + Canvas.canvasStartX, Start.Position.Y + Canvas.canvasStartY, End.Position.X + Canvas.canvasStartX, End.Position.Y + Canvas.canvasStartY);
+                g.DrawLine(p, Start.Position.X + canvasStartX, Start.Position.Y + canvasStartY, End.Position.X + canvasStartX, End.Position.Y + canvasStartY);
             }
         }
 
-        public void DrawText(Graphics g)
+        public void DrawText(Graphics g, int canvasStartX, int canvasStartY)
         {
-            g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2 + Canvas.canvasStartX, (Start.Position.Y + End.Position.Y) / 2 + Canvas.canvasStartY));
+            g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2 + canvasStartX, (Start.Position.Y + End.Position.Y) / 2 + canvasStartY));
         }
 
 
         //WIP
-        public bool Clicked(Point click)
+        public bool Clicked(Point click, int canvasStartX, int canvasStartY)
         {
-            click = new Point(click.X - Canvas.canvasStartX, click.Y - Canvas.canvasStartY);
+            click = new Point(click.X - canvasStartX, click.Y - canvasStartY);
             if ((click.X > Start.Position.X + Width && click.X > End.Position.X + Width) ||
                 (click.X < Start.Position.X - Width && click.X < End.Position.X - Width) ||
                 (click.Y > Start.Position.Y + Width && click.Y > End.Position.Y + Width) ||
