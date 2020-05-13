@@ -35,11 +35,11 @@ namespace Graphs
 
         public bool Reverse;
 
-        
+        public bool Usable;
 
         
 
-        public Edge(FormMain init_canvas, Node init_start, Node init_end, Color init_color, Color init_textColor, int init_value)
+        public Edge(Node init_start, Node init_end, Color init_color, Color init_textColor, int init_value)
         {
             Color = init_color;
             Value = init_value;
@@ -68,7 +68,7 @@ namespace Graphs
 
         public void DrawText(Graphics g, int canvasStartX, int canvasStartY)
         {
-            g.DrawString(Text, new Font("Verdana", 10), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2 + canvasStartX, (Start.Position.Y + End.Position.Y) / 2 + canvasStartY));
+            g.DrawString(Text, new Font("Verdana", 12), new SolidBrush(TextColor), new Point((Start.Position.X + End.Position.X) / 2 + canvasStartX, (Start.Position.Y + End.Position.Y) / 2 + canvasStartY));
         }
 
 

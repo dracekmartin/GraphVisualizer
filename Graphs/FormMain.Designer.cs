@@ -52,11 +52,12 @@
             this.saveGraphButton = new System.Windows.Forms.Button();
             this.directedCheckBox = new System.Windows.Forms.CheckBox();
             this.euclideanSpaceCheckBox = new System.Windows.Forms.CheckBox();
+            this.loadGraphButton = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
             this.graph = new System.Windows.Forms.PictureBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.loadGraphButton = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.clearGraphButton = new System.Windows.Forms.Button();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
             this.groupBoxGraphCreation.SuspendLayout();
@@ -84,6 +85,7 @@
             // 
             // flowLayoutControls
             // 
+            this.flowLayoutControls.AutoSize = true;
             this.flowLayoutControls.BackColor = System.Drawing.SystemColors.ControlDark;
             this.flowLayoutControls.Controls.Add(this.groupBoxGraphCreation);
             this.flowLayoutControls.Controls.Add(this.groupBoxAlg);
@@ -91,7 +93,7 @@
             this.flowLayoutControls.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutControls.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutControls.Name = "flowLayoutControls";
-            this.flowLayoutControls.Size = new System.Drawing.Size(1420, 126);
+            this.flowLayoutControls.Size = new System.Drawing.Size(1420, 116);
             this.flowLayoutControls.TabIndex = 1;
             // 
             // groupBoxGraphCreation
@@ -218,7 +220,7 @@
             this.algorithmSelectionMF.Name = "algorithmSelectionMF";
             this.algorithmSelectionMF.Size = new System.Drawing.Size(131, 30);
             this.algorithmSelectionMF.TabIndex = 13;
-            this.algorithmSelectionMF.Enter += new System.EventHandler(this.algorithmSelection_Enter);
+            this.algorithmSelectionMF.Enter += new System.EventHandler(this.AlgorithmSelection_Enter);
             // 
             // algorithmSelectionMST
             // 
@@ -231,7 +233,7 @@
             this.algorithmSelectionMST.Name = "algorithmSelectionMST";
             this.algorithmSelectionMST.Size = new System.Drawing.Size(131, 43);
             this.algorithmSelectionMST.TabIndex = 12;
-            this.algorithmSelectionMST.Enter += new System.EventHandler(this.algorithmSelection_Enter);
+            this.algorithmSelectionMST.Enter += new System.EventHandler(this.AlgorithmSelection_Enter);
             // 
             // backstepButton
             // 
@@ -286,7 +288,7 @@
             this.algorithmSelectionSP.Name = "algorithmSelectionSP";
             this.algorithmSelectionSP.Size = new System.Drawing.Size(131, 17);
             this.algorithmSelectionSP.TabIndex = 5;
-            this.algorithmSelectionSP.Enter += new System.EventHandler(this.algorithmSelection_Enter);
+            this.algorithmSelectionSP.Enter += new System.EventHandler(this.AlgorithmSelection_Enter);
             // 
             // startAlgButton
             // 
@@ -315,6 +317,7 @@
             // groupBoxOthers
             // 
             this.groupBoxOthers.AutoSize = true;
+            this.groupBoxOthers.Controls.Add(this.clearGraphButton);
             this.groupBoxOthers.Controls.Add(this.saveGraphButton);
             this.groupBoxOthers.Controls.Add(this.directedCheckBox);
             this.groupBoxOthers.Controls.Add(this.euclideanSpaceCheckBox);
@@ -322,14 +325,14 @@
             this.groupBoxOthers.Controls.Add(this.settingsButton);
             this.groupBoxOthers.Location = new System.Drawing.Point(1093, 3);
             this.groupBoxOthers.Name = "groupBoxOthers";
-            this.groupBoxOthers.Size = new System.Drawing.Size(249, 104);
+            this.groupBoxOthers.Size = new System.Drawing.Size(295, 87);
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
             // 
             // saveGraphButton
             // 
-            this.saveGraphButton.Location = new System.Drawing.Point(87, 16);
+            this.saveGraphButton.Location = new System.Drawing.Point(214, 16);
             this.saveGraphButton.Name = "saveGraphButton";
             this.saveGraphButton.Size = new System.Drawing.Size(75, 23);
             this.saveGraphButton.TabIndex = 9;
@@ -340,7 +343,7 @@
             // directedCheckBox
             // 
             this.directedCheckBox.AutoSize = true;
-            this.directedCheckBox.Location = new System.Drawing.Point(6, 68);
+            this.directedCheckBox.Location = new System.Drawing.Point(6, 42);
             this.directedCheckBox.Name = "directedCheckBox";
             this.directedCheckBox.Size = new System.Drawing.Size(96, 17);
             this.directedCheckBox.TabIndex = 8;
@@ -351,7 +354,7 @@
             // euclideanSpaceCheckBox
             // 
             this.euclideanSpaceCheckBox.AutoSize = true;
-            this.euclideanSpaceCheckBox.Location = new System.Drawing.Point(6, 45);
+            this.euclideanSpaceCheckBox.Location = new System.Drawing.Point(6, 20);
             this.euclideanSpaceCheckBox.Name = "euclideanSpaceCheckBox";
             this.euclideanSpaceCheckBox.Size = new System.Drawing.Size(121, 17);
             this.euclideanSpaceCheckBox.TabIndex = 7;
@@ -359,9 +362,19 @@
             this.euclideanSpaceCheckBox.UseVisualStyleBackColor = true;
             this.euclideanSpaceCheckBox.CheckedChanged += new System.EventHandler(this.EuclideanSpaceCheckBox_CheckedChanged);
             // 
+            // loadGraphButton
+            // 
+            this.loadGraphButton.Location = new System.Drawing.Point(214, 45);
+            this.loadGraphButton.Name = "loadGraphButton";
+            this.loadGraphButton.Size = new System.Drawing.Size(75, 23);
+            this.loadGraphButton.TabIndex = 10;
+            this.loadGraphButton.Text = "Load graph";
+            this.loadGraphButton.UseVisualStyleBackColor = true;
+            this.loadGraphButton.Click += new System.EventHandler(this.LoadGraphButton_Click);
+            // 
             // settingsButton
             // 
-            this.settingsButton.Location = new System.Drawing.Point(6, 16);
+            this.settingsButton.Location = new System.Drawing.Point(133, 16);
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(75, 23);
             this.settingsButton.TabIndex = 6;
@@ -372,9 +385,9 @@
             // graph
             // 
             this.graph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.graph.Location = new System.Drawing.Point(3, 135);
+            this.graph.Location = new System.Drawing.Point(3, 125);
             this.graph.Name = "graph";
-            this.graph.Size = new System.Drawing.Size(1420, 363);
+            this.graph.Size = new System.Drawing.Size(1420, 373);
             this.graph.TabIndex = 2;
             this.graph.TabStop = false;
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
@@ -388,21 +401,21 @@
             this.saveFileDialog1.Filter = "GraphML file|*.graphml";
             this.saveFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
             // 
-            // loadGraphButton
-            // 
-            this.loadGraphButton.Location = new System.Drawing.Point(168, 16);
-            this.loadGraphButton.Name = "loadGraphButton";
-            this.loadGraphButton.Size = new System.Drawing.Size(75, 23);
-            this.loadGraphButton.TabIndex = 10;
-            this.loadGraphButton.Text = "Load graph";
-            this.loadGraphButton.UseVisualStyleBackColor = true;
-            this.loadGraphButton.Click += new System.EventHandler(this.loadGraphButton_Click);
-            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "GraphML file|*.graphml";
             this.openFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
+            // 
+            // clearGraphButton
+            // 
+            this.clearGraphButton.Location = new System.Drawing.Point(133, 45);
+            this.clearGraphButton.Name = "clearGraphButton";
+            this.clearGraphButton.Size = new System.Drawing.Size(75, 23);
+            this.clearGraphButton.TabIndex = 11;
+            this.clearGraphButton.Text = "Clear";
+            this.clearGraphButton.UseVisualStyleBackColor = true;
+            this.clearGraphButton.Click += new System.EventHandler(this.ClearGraphButton_Click);
             // 
             // FormMain
             // 
@@ -414,6 +427,7 @@
             this.Text = "Graphs";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tableLayoutMain.ResumeLayout(false);
+            this.tableLayoutMain.PerformLayout();
             this.flowLayoutControls.ResumeLayout(false);
             this.flowLayoutControls.PerformLayout();
             this.groupBoxGraphCreation.ResumeLayout(false);
@@ -459,6 +473,7 @@
         private System.Windows.Forms.Button saveGraphButton;
         private System.Windows.Forms.Button loadGraphButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button clearGraphButton;
     }
 }
 

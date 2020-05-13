@@ -4,13 +4,14 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Graphs
 {
     public partial class FormMain : Form
     {
-        //Defaultní graf
+        //Default graph
         readonly Point[] defaultNodePositions = new Point[]{
             new Point(150*3,100*3),
             new Point(140*3,140*3),
@@ -31,29 +32,28 @@ namespace Graphs
             {0,4,9,0,2,9,0,23},
             {0,0,0,7,0,0,23,0}
         };
-        //Globální proměnné
+        //Global properties
         List<Node> nodes = new List<Node>();
         List<Edge> edges = new List<Edge>();
-        Step currentStep = null;
         Node startingNode = null;
         Node sinkNode = null;
+        Step currentStep = null;
         public bool euclidean = false;
         public bool directed = false;
         public int canvasStartX = 0;
         public int canvasStartY = 0;
-        //Globální proměnné barev
+        //Global color properites
         public Color nodeBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
         public Color textBaseColor = Color.Black;
         public Color smallHiglightColor = Color.FromArgb(220, 220, 0);
         public Color mediumHiglightColor = Color.Orange;
         public Color bigHiglightColor = Color.Red;
-        //Časovač kroků
+        //Timer of algotihm steps
         Timer t;
 
 
 
-        //Inicializace formy a defaultního grafu
         public FormMain()
         {
             InitializeComponent();
@@ -62,12 +62,12 @@ namespace Graphs
 
 
 
-        //Načtení defaultního grafu
+        //Loads a default graph
         private void OnStart()
         {
             foreach (Point iterPoint in defaultNodePositions)
             {
-                nodes.Add(new Node(this, iterPoint, nodeBaseColor));
+                nodes.Add(new Node(iterPoint, nodeBaseColor));
             }
             for (int i = 0; i < nodes.Count(); i++)
             {
@@ -75,7 +75,7 @@ namespace Graphs
                 {
                     if (defaultMatrix[i, k] > 0)
                     {
-                        Edge newEdge = new Edge(this, nodes[i], nodes[k], edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
+                        Edge newEdge = new Edge(nodes[i], nodes[k], edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
                         nodes[i].NodeEdges.Add(newEdge);
                         nodes[k].NodeEdges.Add(newEdge);
                         edges.Add(newEdge);
@@ -91,7 +91,7 @@ namespace Graphs
             RefreshCanvas();
         }
 
-        //Vykreslí všechny hrany a vrcholy z nodes a edges
+        //Draws everything from nodes and edges
         private void Graph_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -108,7 +108,7 @@ namespace Graphs
             }
         }
 
-        //Řeší kliknutí na graf
+        //Solves clicks on the graph
         Node firstNodeOfNewEdge = null;
         Node movingNode = null;
         private void Graph_MouseClick(object sender, MouseEventArgs e)
@@ -148,7 +148,7 @@ namespace Graphs
             {
                 if(e.Button == MouseButtons.Left)
                 {
-                    Node newNode = new Node(this, new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor);
+                    Node newNode = new Node(new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor);
                     nodes.Add(newNode);
                 }
                 else if(e.Button == MouseButtons.Right)
@@ -226,7 +226,7 @@ namespace Graphs
                             }
                             else if (node != firstNodeOfNewEdge)
                             {
-                                Edge newEdge = new Edge(this, firstNodeOfNewEdge, node, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
+                                Edge newEdge = new Edge(firstNodeOfNewEdge, node, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
                                 firstNodeOfNewEdge.NodeEdges.Add(newEdge);
                                 node.NodeEdges.Add(newEdge);
                                 edges.Add(newEdge);
@@ -296,7 +296,7 @@ namespace Graphs
                 {
                     if (node.Clicked(e.Location, canvasStartX, canvasStartY) && node != sinkNode)
                     {
-                        startingNode.Color = nodeBaseColor;
+                        if(startingNode != null) startingNode.Color = nodeBaseColor;
                         startingNode = node;
                         node.Color = mediumHiglightColor;
                         break;
@@ -311,7 +311,7 @@ namespace Graphs
                 {
                     if (node.Clicked(e.Location, canvasStartX, canvasStartY) && node != startingNode)
                     {
-                        sinkNode.Color = nodeBaseColor;
+                        if(sinkNode != null) sinkNode.Color = nodeBaseColor;
                         sinkNode = node;
                         node.Color = bigHiglightColor;
                         break;
@@ -322,6 +322,7 @@ namespace Graphs
             RefreshCanvas();
         }
 
+        //Performs the drag operation
         Point dragStart;
         Point dragEnd;
         private void Graph_MouseDown(object sender, MouseEventArgs e)
@@ -460,6 +461,7 @@ namespace Graphs
                 node.ImportantEdge = null;
             }
         }
+
         //Resets all edgesto default state
         private void ResetEdges()
         {
@@ -503,11 +505,26 @@ namespace Graphs
                     {
                         NewStep(new Step(edge, false, smallHiglightColor));
                         NewStep(new Step(edge.End, false, smallHiglightColor));
-                        if (current.Value != int.MaxValue && edge.End.Value > edge.Value + current.Value)
+                        if(edge.End.Value == int.MaxValue)
                         {
+                            NewStep(new Step(edge.End, false, edge.Value + "+" + current.Value));
                             edge.End.Value = edge.Value + current.Value;
-                            NewStep(new Step(edge.End, false, edge.End.Value + ""));
                         }
+                        else
+                        {
+                            NewStep(new Step(edge.End, false, edge.End.Value + "?" + edge.Value + "+" + current.Value));
+                            if (edge.End.Value > edge.Value + current.Value)
+                            {
+                                NewStep(new Step(edge.End, false, edge.End.Value + ">" + (edge.Value + current.Value)));
+                                edge.End.Value = edge.Value + current.Value;
+                            }
+                            else
+                            {
+                                NewStep(new Step(edge.End, false, edge.End.Value + "<=" + (edge.Value + current.Value)));
+                            }
+                        }
+                        
+                        NewStep(new Step(edge.End, false, edge.End.Value + ""));
                         NewStep(new Step(edge.End, false, nodeBaseColor, edge.End.Value + ""));
                         NewStep(new Step(edge, false, edgeBaseColor));
                     }
@@ -515,11 +532,25 @@ namespace Graphs
                     {
                         NewStep(new Step(edge, false, smallHiglightColor));
                         NewStep(new Step(edge.Start, false, smallHiglightColor));
-                        if (current.Value != int.MaxValue && edge.Start.Value > edge.Value + current.Value)
+                        if(edge.Start.Value == int.MaxValue)
                         {
+                            NewStep(new Step(edge.Start, false, edge.Value + "+" + current.Value));
                             edge.Start.Value = edge.Value + current.Value;
-                            NewStep(new Step(edge.Start, false, edge.Start.Value + ""));
                         }
+                        else
+                        {
+                            NewStep(new Step(edge.Start, false, edge.Start.Value + "?" + edge.Value + "+" + current.Value));
+                            if (edge.Start.Value > edge.Value + current.Value)
+                            {
+                                NewStep(new Step(edge.Start, false, edge.Start.Value + ">" + (edge.Value + current.Value)));
+                                edge.Start.Value = edge.Value + current.Value;
+                            }
+                            else
+                            {
+                                NewStep(new Step(edge.Start, false, edge.Start.Value + "<=" + (edge.Value + current.Value)));
+                            }
+                        }
+                        NewStep(new Step(edge.Start, false, edge.Start.Value + ""));
                         NewStep(new Step(edge.Start, false, nodeBaseColor, edge.Start.Value +""));
                         NewStep(new Step(edge, false, edgeBaseColor));
                     }
@@ -602,6 +633,7 @@ namespace Graphs
                         }
                     }
                 }
+                List<Edge> addedEdges = new List<Edge>();
                 foreach (Node node in nodes)
                 {
                     if (node.ImportantEdge != null)
@@ -610,7 +642,7 @@ namespace Graphs
                         NewStep(new Step(node.ImportantEdge, false, bigHiglightColor));
                         if (!(node.ImportantEdge.Start.PartOfSubset.Equals(node.ImportantEdge.End.PartOfSubset)))
                         {
-                            NewStep(new Step(node.ImportantEdge, false, mediumHiglightColor));
+                            addedEdges.Add(node.ImportantEdge);
                             if (node.ImportantEdge.Start.PartOfSubset.Equals(node))
                             {
                                 node.ImportantEdge.Start.PartOfSubset.PartOfSubset = node.ImportantEdge.End.PartOfSubset;
@@ -621,13 +653,14 @@ namespace Graphs
                             }
                             treeCount--;
                         }
-                        else
-                        {
-                            NewStep(new Step(node.ImportantEdge, false, mediumHiglightColor));
-                        }
+                        NewStep(new Step(node.ImportantEdge, false, smallHiglightColor));
                         NewStep(new Step(node, false, mediumHiglightColor));
                         node.ImportantEdge = null;
                     }
+                }
+                foreach (Edge edge in addedEdges)
+                {
+                    NewStep(new Step(edge, true, mediumHiglightColor));
                 }
             }
         }
@@ -665,7 +698,7 @@ namespace Graphs
 
 
 
-        //Edmonds-Karp's algorithm WIP
+        //Edmonds-Karp's algorithm
         private void EdmondsKarp()
         {
             foreach (Edge edge in edges)
@@ -805,41 +838,104 @@ namespace Graphs
             RefreshCanvas();
             while(DBFS())
             {
-                
-                while(DDFS(startingNode, int.MaxValue) != 0);
+                while(DDFS(startingNode, int.MaxValue) != 0)
+                {
+                    CleanUp();
+                }
             }
         }
+        List<Node> sortedNodes = new List<Node>();
         private bool DBFS()
         {
             foreach (Node node in nodes)
             {
+                node.Visited = false;
                 node.Value = -1;
+            }
+            foreach (Edge edge in edges)
+            {
+                edge.Usable = false;
             }
             Queue<Node> nodeQueue = new Queue<Node>();
             nodeQueue.Enqueue(startingNode);
             startingNode.Value = 0;
             NewStep(new Step(startingNode, false, startingNode.Value + ""));
+            sortedNodes = new List<Node>();
             while (nodeQueue.Count() != 0)
             {
                 Node currentNode = nodeQueue.Dequeue();
                 foreach (Edge edge in currentNode.NodeEdges)
                 {
-                    if (edge.Start.Equals(currentNode) && edge.End.Value == -1 && edge.ResidualValue > 0)
+                    if (edge.Start.Equals(currentNode) && (edge.End.Value == -1 || edge.End.Value == edge.Start.Value + 1) && edge.ResidualValue > 0)
                     {
+                        edge.Usable = true;
                         nodeQueue.Enqueue(edge.End);
                         edge.End.Value = edge.Start.Value + 1;
+                        sortedNodes.Add(edge.End);
                         NewStep(new Step(edge.End, true, edge.End.Value + ""));
-
                     }
-                    else if (edge.End.Equals(currentNode) && edge.Start.Value == -1 && edge.ResidualValue < edge.Value)
+                    else if (edge.End.Equals(currentNode) && (edge.Start.Value == -1 || edge.Start.Value == edge.End.Value + 1) && edge.ResidualValue < edge.Value)
                     {
+                        edge.Usable = true;
                         nodeQueue.Enqueue(edge.Start);
                         edge.Start.Value = edge.End.Value + 1;
+                        sortedNodes.Add(edge.Start);
                         NewStep(new Step(edge.Start, true, edge.Start.Value + ""));
                     }
                 }
             }
+            foreach(Edge edge in edges)
+            {
+                if (edge.Usable)
+                {
+                    NewStep(new Step(edge, true, smallHiglightColor));
+                }
+            }
+            CleanUp();
             return !(sinkNode.Value == -1);
+        }
+        private void CleanUp()
+        {
+            foreach (Node node in nodes)
+            {
+                node.Visited = false;
+            }
+            sinkNode.Visited = true;
+            for (int i = sortedNodes.Count() - 1; i >= 0; i--)
+            {
+                if (sortedNodes[i].Visited == true)
+                {
+                    foreach (Edge edge in sortedNodes[i].NodeEdges)
+                    {
+                        if (edge.Usable && sortedNodes[i].Equals(edge.End))
+                        {
+                            edge.Start.Visited = true;
+                        }
+                        else if (edge.Usable && sortedNodes[i].Equals(edge.Start))
+                        {
+                            edge.End.Visited = true;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Edge edge in sortedNodes[i].NodeEdges)
+                    {
+                        edge.Usable = false;
+                    }
+                }
+            }
+            foreach (Node node in nodes)
+            {
+                node.Visited = false;
+            }
+            foreach (Edge edge in edges)
+            {
+                if (edge.Usable == false)
+                {
+                    NewStep(new Step(edge, true, edgeBaseColor));
+                }
+            }
         }
         private int DDFS(Node currentNode, int currentFlow)
         {
@@ -849,7 +945,7 @@ namespace Graphs
             }
             foreach(Edge edge in currentNode.NodeEdges)
             {
-                if (edge.Start.Equals(currentNode) && edge.End.Value == edge.Start.Value + 1 && edge.ResidualValue > 0)
+                if (edge.Usable && edge.Start.Equals(currentNode) && edge.End.Value == edge.Start.Value + 1 && edge.ResidualValue > 0)
                 {
                     NewStep(new Step(edge, false, mediumHiglightColor));
                     int newFlow = edge.ResidualValue;
@@ -862,12 +958,12 @@ namespace Graphs
                     {
                         edge.ResidualValue -= afterFlow;
                         NewStep(new Step(edge, false, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
-                        NewStep(new Step(edge, false, edgeBaseColor));
+                        NewStep(new Step(edge, false, smallHiglightColor));
                         return afterFlow;
                     }
-                    NewStep(new Step(edge, false, edgeBaseColor));
+                    NewStep(new Step(edge, false, smallHiglightColor));
                 }
-                else if(edge.End.Equals(currentNode) && edge.Start.Value == edge.End.Value + 1 && edge.ResidualValue < edge.Value)
+                else if(edge.Usable && edge.End.Equals(currentNode) && edge.Start.Value == edge.End.Value + 1 && edge.ResidualValue < edge.Value)
                 {
                     NewStep(new Step(edge, false, mediumHiglightColor));
                     int newFlow = edge.Value - edge.ResidualValue;
@@ -880,10 +976,10 @@ namespace Graphs
                     {
                         edge.ResidualValue += afterFlow;
                         NewStep(new Step(edge, false, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
-                        NewStep(new Step(edge, false, edgeBaseColor));
+                        NewStep(new Step(edge, false, smallHiglightColor));
                         return afterFlow;
                     }
-                    NewStep(new Step(edge, false, edgeBaseColor));
+                    NewStep(new Step(edge, false, smallHiglightColor));
                 }
             }
             return 0;
@@ -928,7 +1024,7 @@ namespace Graphs
             }
         }
 
-        //Performs steps of algorithms
+        //Performs steps of an algorithm
         private void StepWait(object sender, EventArgs e)
         {
             if (currentStep.StepAfter != null)
@@ -937,8 +1033,8 @@ namespace Graphs
                 currentStep = currentStep.StepAfter;
                 if (currentStep.massStep == true)
                 {
-                    Console.WriteLine("a");
                     StepWait(sender, e);
+                    return;
                 }
                 RefreshCanvas();
                 t.Interval = waitTimeInput.Value;
@@ -974,6 +1070,7 @@ namespace Graphs
             }
         }
 
+        //Performs steps of the algorithm manually
         private void StepButton_Click(object sender, EventArgs e)
         {
             if (currentStep.StepAfter != null)
@@ -983,38 +1080,38 @@ namespace Graphs
                 if (currentStep.massStep == true)
                 {
                     StepButton_Click(sender, e);
+                    return;
                 }
-                RefreshCanvas();
             }
-            else
+            else if(currentStep.StepAfter == null && currentStep.Reversed == false)
             {
-                if (!currentStep.Reversed)
-                {
-                    currentStep.Complete();
-                    RefreshCanvas();
-                }
+                currentStep.Complete();
             }
+            RefreshCanvas();
         }
 
         private void BackstepButton_Click(object sender, EventArgs e)
         {
-            if (currentStep.StepBefore != null)
+            if (currentStep.StepAfter == null && currentStep.Reversed == true)
             {
-                if (currentStep.StepAfter == null && currentStep.Reversed == true)
+                currentStep.Complete();
+                if (currentStep.massStep)
                 {
-                    currentStep.Complete();
+                    BackstepButton_Click(sender, e);
+                    return;
                 }
-                else
-                {
-                    currentStep = currentStep.StepBefore;
-                    currentStep.Complete();
-                    if (currentStep.massStep == true)
-                    {
-                        BackstepButton_Click(sender, e);
-                    }
-                }
-                RefreshCanvas();
             }
+            else if(currentStep.StepBefore != null)
+            {
+                currentStep = currentStep.StepBefore;
+                currentStep.Complete();
+                if (currentStep.massStep)
+                {
+                    BackstepButton_Click(sender, e);
+                    return;
+                }
+            }
+            RefreshCanvas();
         }
 
         //Makes sure only one click function is selected at a time and enables edge value input when appropriate
@@ -1025,8 +1122,8 @@ namespace Graphs
             RecolorToBase();
             if (clickFunctionStartingNode.SelectedIndex == 0 || clickFunctionStartingNode.SelectedIndex == 1)
             {
-                startingNode.Color = mediumHiglightColor;
-                sinkNode.Color = bigHiglightColor;
+                if(startingNode != null) startingNode.Color = mediumHiglightColor;
+                if(sinkNode != null) sinkNode.Color = bigHiglightColor;
             }
             if (clickFunctionEdge.SelectedIndex == 0 || clickFunctionEdge.SelectedIndex == 1)
             {
@@ -1056,7 +1153,7 @@ namespace Graphs
 
         //Makes sure only one alghoritm is selected at a time
 
-        private void algorithmSelection_Enter(object sender, EventArgs e)
+        private void AlgorithmSelection_Enter(object sender, EventArgs e)
         {
             List<ListBox> algorithms = new List<ListBox>();
             algorithms.Add(algorithmSelectionSP);
@@ -1095,11 +1192,10 @@ namespace Graphs
         //Saves the graph in .graphml format
         private void SaveGraphButton_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.ShowDialog();
-            if (saveFileDialog1.FileName != null)
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 TextWriter writer = new StreamWriter(saveFileDialog1.FileName);
-                writer.WriteLine("<?xml version=\"1.0\" encoding=\"UTF - 8\"?><graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\">");
+                writer.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?><graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\">");
                 writer.WriteLine("<key attr.name=\"x\" attr.type=\"float\" for=\"node\" id=\"x\"/>");
                 writer.WriteLine("<key attr.name=\"y\" attr.type=\"float\" for=\"node\" id=\"y\"/>");
                 writer.WriteLine("<key attr.name=\"weight\" attr.type=\"double\" for=\"edge\" id=\"weight\"/>");
@@ -1117,8 +1213,8 @@ namespace Graphs
                     node.id = idCount;
                     idCount++;
                     writer.WriteLine("<node id=\"" + node.id + "\">");
-                    writer.WriteLine("<data key=\"x\" >" + node.Position.X + "</data>");
-                    writer.WriteLine("<data key=\"y\" >" + (-node.Position.Y) + "</data>");
+                    writer.WriteLine("<data key=\"x\">" + node.Position.X + "</data>");
+                    writer.WriteLine("<data key=\"y\">" + (-node.Position.Y) + "</data>");
                     writer.WriteLine("</node>");
                 }
                 idCount = 0;
@@ -1135,13 +1231,52 @@ namespace Graphs
             }
         }
 
-        private void loadGraphButton_Click(object sender, EventArgs e)
+        //Saves the graph from a .graphml file
+        private void LoadGraphButton_Click(object sender, EventArgs e)
         {
-            openFileDialog1.ShowDialog();
-            if (saveFileDialog1.FileName != null)
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //TextReader reader = new TextReader(openFileDialog1.FileName);
+                nodes = new List<Node>();
+                edges = new List<Edge>();
+                XmlDocument doc = new XmlDocument();
+                doc.Load(openFileDialog1.FileName);
+                Console.WriteLine(doc.DocumentElement.Name);
+                XmlNode graph = doc.DocumentElement.GetElementsByTagName("graph")[0];
+                if(graph.Attributes["edgedefault"].Value == "directed")
+                {
+                    directed = true;
+                }
+                else
+                {
+                    directed = false;
+                }
+                XmlNodeList nodesAndEdges = graph.ChildNodes;
+                foreach (XmlNode node in nodesAndEdges)
+                {
+                    if(node.Name == "node")
+                    {
+                        nodes.Add(new Node(new Point(int.Parse(node.ChildNodes[0].InnerText), -int.Parse(node.ChildNodes[1].InnerText)), nodeBaseColor));
+                    }
+                    else if(node.Name == "edge")
+                    {
+                        Edge newEdge = new Edge(nodes[int.Parse(node.Attributes["source"].Value)], nodes[int.Parse(node.Attributes["target"].Value)], edgeBaseColor, textBaseColor, int.Parse(node.ChildNodes[0].InnerText));
+                        edges.Add(newEdge);
+                        newEdge.Start.NodeEdges.Add(newEdge);
+                        newEdge.End.NodeEdges.Add(newEdge);
+                    }
+                }
+                RefreshCanvas();
             }
+        }
+
+        //Deletes all nodes and edges
+        private void ClearGraphButton_Click(object sender, EventArgs e)
+        {
+            nodes = new List<Node>();
+            edges = new List<Edge>();
+            startingNode = null;
+            sinkNode = null;
+            RefreshCanvas();
         }
     }
 }

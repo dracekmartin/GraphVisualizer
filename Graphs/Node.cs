@@ -18,7 +18,6 @@ namespace Graphs
         public bool Visited;
      
         private Node hidden_PartOfSubset;
-        
         public Node PartOfSubset
         {
             get
@@ -43,7 +42,7 @@ namespace Graphs
 
         public int id;
 
-        public Node(FormMain init_canvas, Point init_position, Color init_color)
+        public Node(Point init_position, Color init_color)
         {
             Color = init_color;
             Text = "";
@@ -65,7 +64,7 @@ namespace Graphs
         public void DrawText(Graphics g, int canvasStartX, int canvasStartY)
         {
             Brush b = new SolidBrush(Color);
-            g.DrawString(Text, new Font("Verdana", 10), b, Position.X + 2 + canvasStartX, Position.Y + 2 + canvasStartY);
+            g.DrawString(Text, new Font("Verdana", 12), b, Position.X + 2 + canvasStartX, Position.Y + 2 + canvasStartY);
         }
 
         public bool Clicked(Point click, int canvasStartX, int canvasStartY)
@@ -82,12 +81,6 @@ namespace Graphs
                 return false;
             }
         }
-
-        public Node()
-        {
-
-        }
-        
     }
 }
 
