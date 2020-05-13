@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Xml.Serialization;
 
 namespace Graphs
 {

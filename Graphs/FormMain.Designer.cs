@@ -49,6 +49,7 @@
             this.startAlgButton = new System.Windows.Forms.Button();
             this.clickFunctionStartingNode = new System.Windows.Forms.ListBox();
             this.groupBoxOthers = new System.Windows.Forms.GroupBox();
+            this.clearGraphButton = new System.Windows.Forms.Button();
             this.saveGraphButton = new System.Windows.Forms.Button();
             this.directedCheckBox = new System.Windows.Forms.CheckBox();
             this.euclideanSpaceCheckBox = new System.Windows.Forms.CheckBox();
@@ -57,7 +58,6 @@
             this.graph = new System.Windows.Forms.PictureBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.clearGraphButton = new System.Windows.Forms.Button();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
             this.groupBoxGraphCreation.SuspendLayout();
@@ -219,7 +219,7 @@
             this.algorithmSelectionMF.Location = new System.Drawing.Point(280, 32);
             this.algorithmSelectionMF.Name = "algorithmSelectionMF";
             this.algorithmSelectionMF.Size = new System.Drawing.Size(131, 30);
-            this.algorithmSelectionMF.TabIndex = 13;
+            this.algorithmSelectionMF.TabIndex = 7;
             this.algorithmSelectionMF.Enter += new System.EventHandler(this.AlgorithmSelection_Enter);
             // 
             // algorithmSelectionMST
@@ -232,7 +232,7 @@
             this.algorithmSelectionMST.Location = new System.Drawing.Point(143, 32);
             this.algorithmSelectionMST.Name = "algorithmSelectionMST";
             this.algorithmSelectionMST.Size = new System.Drawing.Size(131, 43);
-            this.algorithmSelectionMST.TabIndex = 12;
+            this.algorithmSelectionMST.TabIndex = 6;
             this.algorithmSelectionMST.Enter += new System.EventHandler(this.AlgorithmSelection_Enter);
             // 
             // backstepButton
@@ -240,7 +240,7 @@
             this.backstepButton.Location = new System.Drawing.Point(554, 68);
             this.backstepButton.Name = "backstepButton";
             this.backstepButton.Size = new System.Drawing.Size(34, 23);
-            this.backstepButton.TabIndex = 11;
+            this.backstepButton.TabIndex = 12;
             this.backstepButton.Text = "<-";
             this.backstepButton.UseVisualStyleBackColor = true;
             this.backstepButton.Click += new System.EventHandler(this.BackstepButton_Click);
@@ -250,7 +250,7 @@
             this.stepButton.Location = new System.Drawing.Point(594, 68);
             this.stepButton.Name = "stepButton";
             this.stepButton.Size = new System.Drawing.Size(34, 23);
-            this.stepButton.TabIndex = 10;
+            this.stepButton.TabIndex = 13;
             this.stepButton.Text = "->";
             this.stepButton.UseVisualStyleBackColor = true;
             this.stepButton.Click += new System.EventHandler(this.StepButton_Click);
@@ -261,7 +261,7 @@
             this.pauseButton.Location = new System.Drawing.Point(554, 45);
             this.pauseButton.Name = "pauseButton";
             this.pauseButton.Size = new System.Drawing.Size(75, 23);
-            this.pauseButton.TabIndex = 9;
+            this.pauseButton.TabIndex = 11;
             this.pauseButton.Text = "Pause";
             this.pauseButton.UseVisualStyleBackColor = true;
             this.pauseButton.Click += new System.EventHandler(this.PauseButton_Click);
@@ -272,11 +272,11 @@
             this.waitTimeInput.BackColor = System.Drawing.SystemColors.ControlDark;
             this.waitTimeInput.LargeChange = 100;
             this.waitTimeInput.Location = new System.Drawing.Point(417, 52);
-            this.waitTimeInput.Maximum = 1000;
+            this.waitTimeInput.Maximum = 1001;
             this.waitTimeInput.Minimum = 1;
             this.waitTimeInput.Name = "waitTimeInput";
             this.waitTimeInput.Size = new System.Drawing.Size(131, 33);
-            this.waitTimeInput.TabIndex = 7;
+            this.waitTimeInput.TabIndex = 10;
             this.waitTimeInput.Value = 100;
             // 
             // algorithmSelectionSP
@@ -296,7 +296,7 @@
             this.startAlgButton.Location = new System.Drawing.Point(554, 16);
             this.startAlgButton.Name = "startAlgButton";
             this.startAlgButton.Size = new System.Drawing.Size(75, 23);
-            this.startAlgButton.TabIndex = 8;
+            this.startAlgButton.TabIndex = 9;
             this.startAlgButton.Text = "Start";
             this.startAlgButton.UseVisualStyleBackColor = true;
             this.startAlgButton.Click += new System.EventHandler(this.StartButton_Click);
@@ -310,7 +310,7 @@
             this.clickFunctionStartingNode.Location = new System.Drawing.Point(417, 16);
             this.clickFunctionStartingNode.Name = "clickFunctionStartingNode";
             this.clickFunctionStartingNode.Size = new System.Drawing.Size(131, 30);
-            this.clickFunctionStartingNode.TabIndex = 6;
+            this.clickFunctionStartingNode.TabIndex = 8;
             this.clickFunctionStartingNode.SelectedIndexChanged += new System.EventHandler(this.ClickFunctionChange);
             this.clickFunctionStartingNode.Leave += new System.EventHandler(this.ClickFunctionLeaveFocus);
             // 
@@ -330,12 +330,22 @@
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
             // 
+            // clearGraphButton
+            // 
+            this.clearGraphButton.Location = new System.Drawing.Point(133, 45);
+            this.clearGraphButton.Name = "clearGraphButton";
+            this.clearGraphButton.Size = new System.Drawing.Size(75, 23);
+            this.clearGraphButton.TabIndex = 17;
+            this.clearGraphButton.Text = "Clear";
+            this.clearGraphButton.UseVisualStyleBackColor = true;
+            this.clearGraphButton.Click += new System.EventHandler(this.ClearGraphButton_Click);
+            // 
             // saveGraphButton
             // 
             this.saveGraphButton.Location = new System.Drawing.Point(214, 16);
             this.saveGraphButton.Name = "saveGraphButton";
             this.saveGraphButton.Size = new System.Drawing.Size(75, 23);
-            this.saveGraphButton.TabIndex = 9;
+            this.saveGraphButton.TabIndex = 18;
             this.saveGraphButton.Text = "Save graph";
             this.saveGraphButton.UseVisualStyleBackColor = true;
             this.saveGraphButton.Click += new System.EventHandler(this.SaveGraphButton_Click);
@@ -346,7 +356,7 @@
             this.directedCheckBox.Location = new System.Drawing.Point(6, 42);
             this.directedCheckBox.Name = "directedCheckBox";
             this.directedCheckBox.Size = new System.Drawing.Size(96, 17);
-            this.directedCheckBox.TabIndex = 8;
+            this.directedCheckBox.TabIndex = 15;
             this.directedCheckBox.Text = "Directed graph";
             this.directedCheckBox.UseVisualStyleBackColor = true;
             this.directedCheckBox.CheckedChanged += new System.EventHandler(this.DirectedCheckBox_CheckedChanged);
@@ -357,7 +367,7 @@
             this.euclideanSpaceCheckBox.Location = new System.Drawing.Point(6, 20);
             this.euclideanSpaceCheckBox.Name = "euclideanSpaceCheckBox";
             this.euclideanSpaceCheckBox.Size = new System.Drawing.Size(121, 17);
-            this.euclideanSpaceCheckBox.TabIndex = 7;
+            this.euclideanSpaceCheckBox.TabIndex = 14;
             this.euclideanSpaceCheckBox.Text = "Euclidean distances";
             this.euclideanSpaceCheckBox.UseVisualStyleBackColor = true;
             this.euclideanSpaceCheckBox.CheckedChanged += new System.EventHandler(this.EuclideanSpaceCheckBox_CheckedChanged);
@@ -367,7 +377,7 @@
             this.loadGraphButton.Location = new System.Drawing.Point(214, 45);
             this.loadGraphButton.Name = "loadGraphButton";
             this.loadGraphButton.Size = new System.Drawing.Size(75, 23);
-            this.loadGraphButton.TabIndex = 10;
+            this.loadGraphButton.TabIndex = 19;
             this.loadGraphButton.Text = "Load graph";
             this.loadGraphButton.UseVisualStyleBackColor = true;
             this.loadGraphButton.Click += new System.EventHandler(this.LoadGraphButton_Click);
@@ -377,7 +387,7 @@
             this.settingsButton.Location = new System.Drawing.Point(133, 16);
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(75, 23);
-            this.settingsButton.TabIndex = 6;
+            this.settingsButton.TabIndex = 16;
             this.settingsButton.Text = "Settings";
             this.settingsButton.UseVisualStyleBackColor = true;
             this.settingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
@@ -406,16 +416,6 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "GraphML file|*.graphml";
             this.openFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
-            // 
-            // clearGraphButton
-            // 
-            this.clearGraphButton.Location = new System.Drawing.Point(133, 45);
-            this.clearGraphButton.Name = "clearGraphButton";
-            this.clearGraphButton.Size = new System.Drawing.Size(75, 23);
-            this.clearGraphButton.TabIndex = 11;
-            this.clearGraphButton.Text = "Clear";
-            this.clearGraphButton.UseVisualStyleBackColor = true;
-            this.clearGraphButton.Click += new System.EventHandler(this.ClearGraphButton_Click);
             // 
             // FormMain
             // 

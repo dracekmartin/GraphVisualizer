@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Graphs
 {
@@ -113,7 +112,7 @@ namespace Graphs
         Node movingNode = null;
         private void Graph_MouseClick(object sender, MouseEventArgs e)
         {
-            //Zvýrazní vrchol nebo hranu
+            //Highlights an edge or a node
             if (clickFunctionClick.SelectedIndex == 0)
             {
                 bool found = false;
@@ -143,7 +142,7 @@ namespace Graphs
                 }
             }
 
-            //Přidá nebo smaže vrchol 
+            //Adds or deletes a node
             else if (clickFunctionNode.SelectedIndex == 0)
             {
                 if(e.Button == MouseButtons.Left)
@@ -178,7 +177,7 @@ namespace Graphs
                 }
             }
 
-            //Přesune vrchol
+            //Moves a node
             else if (clickFunctionNode.SelectedIndex == 1)
             {
                 if (movingNode == null)
@@ -209,7 +208,7 @@ namespace Graphs
                 }
             }
 
-            //Přidá nebo smaže hranu
+            //Adds or deletes an edge
             else if (clickFunctionEdge.SelectedIndex == 0)
             {
                 if (e.Button == MouseButtons.Left)
@@ -254,7 +253,7 @@ namespace Graphs
                 }
             }
 
-            //Změní hodnotu hrany
+            //Changes the value of an edge
             else if (clickFunctionEdge.SelectedIndex == 1)
             {
                 foreach (Edge edge in edges)
@@ -271,25 +270,22 @@ namespace Graphs
                 edgeValueInput.SelectAll();
             }
 
-            //Určí směr hrany
+            //Switches the direction of an edge
             else if (clickFunctionEdge.SelectedIndex == 2)
             {
                 foreach (Edge edge in edges)
                 {
                     if (edge.Clicked(e.Location, canvasStartX, canvasStartY))
                     {
-                        if ((Math.Pow(e.Location.X - edge.End.Position.X, 2) + Math.Pow(e.Location.Y - edge.End.Position.Y, 2)) > (Math.Pow(e.Location.X - edge.Start.Position.X, 2) + Math.Pow(e.Location.Y - edge.Start.Position.Y, 2)))
-                        {
-                            Node fn = edge.Start;
-                            edge.Start = edge.End;
-                            edge.End = fn;
-                        }
+                        Node fn = edge.Start;
+                        edge.Start = edge.End;
+                        edge.End = fn;
                         break;
                     }
                 }
             }
 
-            //Vybere začáteční vrchol
+            //Chooses the starting node
             else if (clickFunctionStartingNode.SelectedIndex == 0)
             {
                 foreach (Node node in nodes)
@@ -304,7 +300,7 @@ namespace Graphs
                 }
             }
 
-            //Vybere stok
+            //Chooses the sink node
             else if (clickFunctionStartingNode.SelectedIndex == 1)
             {
                 foreach (Node node in nodes)
@@ -357,15 +353,21 @@ namespace Graphs
         {
             if (startAlgButton.Text == "Start")
             {
+                if (!Connected())
+                {
+                    MessageBox.Show("Graph is not connected");
+                    return;
+                }
                 ResetNodes();
                 ResetEdges();
-                Console.WriteLine("a");
                 if (algorithmSelectionSP.SelectedIndex == 0)
                 {
+                    if (NoStart()) return;
                     Dijkstra();
                 }
                 else if (algorithmSelectionMST.SelectedIndex == 0)
                 {
+                    if (NoStart()) return;
                     Jarnik();
                 }
                 else if (algorithmSelectionMST.SelectedIndex == 1)
@@ -375,16 +377,20 @@ namespace Graphs
                 else if (algorithmSelectionMST.SelectedIndex == 2)
                 {
                     Kruskal();
-                }
+                }   
                 else if (algorithmSelectionMF.SelectedIndex == 0)
                 {
+                    if (NoStart()) return;
+                    if (NoSink()) return;
                     EdmondsKarp();
                 }
-                else if(algorithmSelectionMF.SelectedIndex == 1)
+                else if (algorithmSelectionMF.SelectedIndex == 1)
                 {
+                    if (NoStart()) return;
+                    if (NoSink()) return;
                     Dinic();
                 }
-
+                    
                 if(currentStep != null)
                 {
                     while (currentStep.StepBefore != null)
@@ -411,6 +417,9 @@ namespace Graphs
                 euclideanSpaceCheckBox.Enabled = false;
                 directedCheckBox.Enabled = false;
                 pauseButton.Enabled = true;
+                clearGraphButton.Enabled = false;
+                loadGraphButton.Enabled = false;
+                saveGraphButton.Enabled = false;
 
                 t = new Timer();
                 t.Interval = waitTimeInput.Value;
@@ -443,7 +452,30 @@ namespace Graphs
                 pauseButton.Enabled = false;
                 stepButton.Enabled = false;
                 backstepButton.Enabled = false;
+                clearGraphButton.Enabled = true;
+                loadGraphButton.Enabled = true;
+                saveGraphButton.Enabled = true;
             }
+        }
+
+        private bool NoStart()
+        {
+            if (startingNode == null)
+            {
+                MessageBox.Show("No starting node selected");
+                return true;
+            }
+            return false;
+        }
+
+        private bool NoSink()   
+        {
+            if (sinkNode == null)
+            {
+                MessageBox.Show("No sink node selected");
+                return true;
+            }
+            return false;
         }
 
         //Resets all nodes to default state
@@ -471,6 +503,39 @@ namespace Graphs
                 edge.Color = edgeBaseColor;
             }
         }
+
+        private bool Connected()
+        {
+            foreach(Node node in nodes)
+            {
+                node.Visited = false;
+            }
+            Queue<Node> searchedNodes = new Queue<Node>();
+            searchedNodes.Enqueue(nodes[0]);
+            nodes[0].Visited = true;
+            int nodeCount = 0;
+            while(searchedNodes.Count() > 0)
+            {
+                Node currentNode = searchedNodes.Dequeue();
+                nodeCount++;
+                foreach(Edge edge in edges)
+                {
+                    if (currentNode.Equals(edge.Start) && edge.End.Visited == false)
+                    {
+                        edge.End.Visited = true;
+                        searchedNodes.Enqueue(edge.End);
+                    }
+                    else if (currentNode.Equals(edge.End) && edge.Start.Visited == false)
+                    {
+                        edge.Start.Visited = true;
+                        searchedNodes.Enqueue(edge.Start);
+                    }
+                }
+            }
+            Console.WriteLine(nodeCount);
+            return nodeCount == nodes.Count();
+        }
+
 
 
         //Dijkstra's algorithm
@@ -680,7 +745,7 @@ namespace Graphs
             {
                 NewStep(new Step(node, true, mediumHiglightColor));
             }
-            while (treeCount > 1 || edgeHeap.IsEmpty())
+            while (treeCount > 1)
             {
                 Edge currentEdge = edgeHeap.Pop();
                 if (!(currentEdge.Start.PartOfSubset.Equals(currentEdge.End.PartOfSubset)))
@@ -845,8 +910,10 @@ namespace Graphs
             }
         }
         List<Node> sortedNodes = new List<Node>();
+        Queue<Node> suspectNodes;
         private bool DBFS()
         {
+            suspectNodes = new Queue<Node>();
             foreach (Node node in nodes)
             {
                 node.Visited = false;
@@ -859,7 +926,7 @@ namespace Graphs
             Queue<Node> nodeQueue = new Queue<Node>();
             nodeQueue.Enqueue(startingNode);
             startingNode.Value = 0;
-            NewStep(new Step(startingNode, false, startingNode.Value + ""));
+            NewStep(new Step(startingNode, true, startingNode.Value + ""));
             sortedNodes = new List<Node>();
             while (nodeQueue.Count() != 0)
             {
@@ -891,11 +958,6 @@ namespace Graphs
                     NewStep(new Step(edge, true, smallHiglightColor));
                 }
             }
-            CleanUp();
-            return !(sinkNode.Value == -1);
-        }
-        private void CleanUp()
-        {
             foreach (Node node in nodes)
             {
                 node.Visited = false;
@@ -925,10 +987,6 @@ namespace Graphs
                     }
                 }
             }
-            foreach (Node node in nodes)
-            {
-                node.Visited = false;
-            }
             foreach (Edge edge in edges)
             {
                 if (edge.Usable == false)
@@ -936,7 +994,60 @@ namespace Graphs
                     NewStep(new Step(edge, true, edgeBaseColor));
                 }
             }
+            return !(sinkNode.Value == -1);
         }
+        
+        private void CleanUp()
+        {
+            while (suspectNodes.Count() > 0)
+            {
+                Node currentNode = suspectNodes.Dequeue();
+                bool incoming = false;
+                bool outgoing = false;
+                if (!currentNode.Equals(startingNode) && !currentNode.Equals(sinkNode))
+                {
+                    foreach (Edge edge in currentNode.NodeEdges)
+                    {
+                        if (edge.Usable && edge.Start.Equals(currentNode) && edge.End.Value == edge.Start.Value + 1)
+                        {
+                            outgoing = true;
+                        }
+                        else if (edge.Usable && edge.End.Equals(currentNode) && edge.Start.Value == edge.End.Value + 1)
+                        {
+                            outgoing = true;
+                        }
+                        else if (edge.Usable && edge.Start.Equals(currentNode) && edge.Start.Value == edge.End.Value + 1)
+                        {
+                            incoming = true;
+                        }
+                        else if (edge.Usable && edge.End.Equals(currentNode) && edge.End.Value == edge.Start.Value + 1)
+                        {
+                            incoming = true;
+                        }
+                    }
+                    if (!(incoming && outgoing))
+                    {
+                        foreach (Edge edge in currentNode.NodeEdges)
+                        {
+                            if (edge.Usable)
+                            {
+                                NewStep(new Step(edge, false, edgeBaseColor));
+                                edge.Usable = false;
+                                if (currentNode.Equals(edge.Start))
+                                {
+                                    suspectNodes.Enqueue(edge.End);
+                                }
+                                else
+                                {
+                                    suspectNodes.Enqueue(edge.Start);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         private int DDFS(Node currentNode, int currentFlow)
         {
             if (currentNode.Equals(sinkNode))
@@ -958,10 +1069,24 @@ namespace Graphs
                     {
                         edge.ResidualValue -= afterFlow;
                         NewStep(new Step(edge, false, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
-                        NewStep(new Step(edge, false, smallHiglightColor));
+                        if (edge.ResidualValue == 0)
+                        {
+                            edge.Usable = false;
+                            suspectNodes.Enqueue(edge.Start);
+                            suspectNodes.Enqueue(edge.End);
+                            NewStep(new Step(edge, false, edgeBaseColor));
+                        }
+                        else
+                        {
+                            NewStep(new Step(edge, false, smallHiglightColor));
+                        }
                         return afterFlow;
                     }
-                    NewStep(new Step(edge, false, smallHiglightColor));
+                    else
+                    {
+                        NewStep(new Step(edge, false, smallHiglightColor));
+                    }
+
                 }
                 else if(edge.Usable && edge.End.Equals(currentNode) && edge.Start.Value == edge.End.Value + 1 && edge.ResidualValue < edge.Value)
                 {
@@ -975,11 +1100,25 @@ namespace Graphs
                     if (afterFlow > 0)
                     {
                         edge.ResidualValue += afterFlow;
+                        
                         NewStep(new Step(edge, false, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
-                        NewStep(new Step(edge, false, smallHiglightColor));
+                        if (edge.ResidualValue == edge.Value)
+                        {
+                            edge.Usable = false;
+                            suspectNodes.Enqueue(edge.Start);
+                            suspectNodes.Enqueue(edge.End);
+                            NewStep(new Step(edge, false, edgeBaseColor));
+                        }
+                        else
+                        {
+                            NewStep(new Step(edge, false, smallHiglightColor));
+                        }
                         return afterFlow;
                     }
-                    NewStep(new Step(edge, false, smallHiglightColor));
+                    else
+                    {
+                        NewStep(new Step(edge, false, smallHiglightColor));
+                    }
                 }
             }
             return 0;
@@ -1031,7 +1170,7 @@ namespace Graphs
             {
                 currentStep.Complete();
                 currentStep = currentStep.StepAfter;
-                if (currentStep.massStep == true)
+                if (currentStep.StepBefore.massStep == true && currentStep.massStep == true)
                 {
                     StepWait(sender, e);
                     return;
@@ -1077,7 +1216,7 @@ namespace Graphs
             {
                 currentStep.Complete();
                 currentStep = currentStep.StepAfter;
-                if (currentStep.massStep == true)
+                if (currentStep.StepBefore.massStep == true && currentStep.massStep == true)
                 {
                     StepButton_Click(sender, e);
                     return;
@@ -1095,7 +1234,7 @@ namespace Graphs
             if (currentStep.StepAfter == null && currentStep.Reversed == true)
             {
                 currentStep.Complete();
-                if (currentStep.massStep)
+                if (currentStep.StepBefore.massStep == true && currentStep.massStep == true)
                 {
                     BackstepButton_Click(sender, e);
                     return;
@@ -1105,7 +1244,7 @@ namespace Graphs
             {
                 currentStep = currentStep.StepBefore;
                 currentStep.Complete();
-                if (currentStep.massStep)
+                if (currentStep.StepBefore.massStep == true && currentStep.massStep == true)
                 {
                     BackstepButton_Click(sender, e);
                     return;
@@ -1238,17 +1377,23 @@ namespace Graphs
             {
                 nodes = new List<Node>();
                 edges = new List<Edge>();
+                startingNode = null;
+                sinkNode = null;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog1.FileName);
                 Console.WriteLine(doc.DocumentElement.Name);
                 XmlNode graph = doc.DocumentElement.GetElementsByTagName("graph")[0];
+                if (euclideanSpaceCheckBox.Checked)
+                {
+                    euclideanSpaceCheckBox.Checked = false;
+                }
                 if(graph.Attributes["edgedefault"].Value == "directed")
                 {
-                    directed = true;
+                    directedCheckBox.Checked = true;
                 }
                 else
                 {
-                    directed = false;
+                    directedCheckBox.Checked = false;
                 }
                 XmlNodeList nodesAndEdges = graph.ChildNodes;
                 foreach (XmlNode node in nodesAndEdges)

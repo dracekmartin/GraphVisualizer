@@ -33,8 +33,8 @@
             this.edgeBaseColorButton = new System.Windows.Forms.Button();
             this.textBaseColorButton = new System.Windows.Forms.Button();
             this.smallHiglightColor = new System.Windows.Forms.Button();
-            this.bigHiglightColor = new System.Windows.Forms.Button();
             this.mediumHiglightColor = new System.Windows.Forms.Button();
+            this.bigHiglightColor = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +50,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(404, 450);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(285, 296);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // vertexBaseColorButton
@@ -93,16 +93,6 @@
             this.smallHiglightColor.UseVisualStyleBackColor = true;
             this.smallHiglightColor.Click += new System.EventHandler(this.smallHiglightColor_Click);
             // 
-            // bigHiglightColor
-            // 
-            this.bigHiglightColor.Location = new System.Drawing.Point(3, 148);
-            this.bigHiglightColor.Name = "bigHiglightColor";
-            this.bigHiglightColor.Size = new System.Drawing.Size(123, 23);
-            this.bigHiglightColor.TabIndex = 5;
-            this.bigHiglightColor.Text = "Big highlight color";
-            this.bigHiglightColor.UseVisualStyleBackColor = true;
-            this.bigHiglightColor.Click += new System.EventHandler(this.bigHiglightColor_Click);
-            // 
             // mediumHiglightColor
             // 
             this.mediumHiglightColor.Location = new System.Drawing.Point(3, 119);
@@ -113,11 +103,21 @@
             this.mediumHiglightColor.UseVisualStyleBackColor = true;
             this.mediumHiglightColor.Click += new System.EventHandler(this.mediumHiglightColor_Click);
             // 
+            // bigHiglightColor
+            // 
+            this.bigHiglightColor.Location = new System.Drawing.Point(3, 148);
+            this.bigHiglightColor.Name = "bigHiglightColor";
+            this.bigHiglightColor.Size = new System.Drawing.Size(123, 23);
+            this.bigHiglightColor.TabIndex = 5;
+            this.bigHiglightColor.Text = "Big highlight color";
+            this.bigHiglightColor.UseVisualStyleBackColor = true;
+            this.bigHiglightColor.Click += new System.EventHandler(this.bigHiglightColor_Click);
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 450);
+            this.ClientSize = new System.Drawing.Size(285, 296);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "FormSettings";
             this.Text = "FormSettings";
