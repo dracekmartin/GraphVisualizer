@@ -1423,5 +1423,45 @@ namespace Graphs
             sinkNode = null;
             RefreshCanvas();
         }
+        //Saves an adjacency matrix
+        private void MatrixButton_Click(object sender, EventArgs e)
+        {
+            int idCount = 0;
+            foreach (Node node in nodes)
+            {
+                node.id = idCount;
+                idCount++;
+            }
+            int[,] Matrix = new int[nodes.Count, nodes.Count];
+            if (directed == true)
+            {
+                foreach (Edge edge in edges)
+                {
+                    Matrix[edge.Start.id, edge.End.id] = edge.Value;
+                }
+            }
+            else
+            {
+                foreach (Edge edge in edges)
+                {
+                    Matrix[edge.Start.id, edge.End.id] = edge.Value;
+                    Matrix[edge.End.id, edge.Start.id] = edge.Value;
+                }
+            }
+            if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                TextWriter writer = new StreamWriter(saveFileDialog2.FileName);
+                for(int i = 0; i < nodes.Count; i++)
+                {
+                    string line = "";
+                    for (int k = 0; k < nodes.Count; k++)
+                    {
+                        line += Matrix[i, k] + " ";
+                    }
+                    writer.WriteLine(line);
+                }
+                writer.Close();
+            }
+        }
     }
 }

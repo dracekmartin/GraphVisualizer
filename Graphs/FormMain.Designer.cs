@@ -58,6 +58,8 @@
             this.graph = new System.Windows.Forms.PictureBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.matrixButton = new System.Windows.Forms.Button();
+            this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
             this.groupBoxGraphCreation.SuspendLayout();
@@ -80,7 +82,7 @@
             this.tableLayoutMain.RowCount = 2;
             this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutMain.Size = new System.Drawing.Size(1426, 501);
+            this.tableLayoutMain.Size = new System.Drawing.Size(1492, 501);
             this.tableLayoutMain.TabIndex = 2;
             // 
             // flowLayoutControls
@@ -93,7 +95,7 @@
             this.flowLayoutControls.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutControls.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutControls.Name = "flowLayoutControls";
-            this.flowLayoutControls.Size = new System.Drawing.Size(1420, 116);
+            this.flowLayoutControls.Size = new System.Drawing.Size(1486, 116);
             this.flowLayoutControls.TabIndex = 1;
             // 
             // groupBoxGraphCreation
@@ -317,6 +319,7 @@
             // groupBoxOthers
             // 
             this.groupBoxOthers.AutoSize = true;
+            this.groupBoxOthers.Controls.Add(this.matrixButton);
             this.groupBoxOthers.Controls.Add(this.clearGraphButton);
             this.groupBoxOthers.Controls.Add(this.saveGraphButton);
             this.groupBoxOthers.Controls.Add(this.directedCheckBox);
@@ -325,7 +328,7 @@
             this.groupBoxOthers.Controls.Add(this.settingsButton);
             this.groupBoxOthers.Location = new System.Drawing.Point(1093, 3);
             this.groupBoxOthers.Name = "groupBoxOthers";
-            this.groupBoxOthers.Size = new System.Drawing.Size(295, 87);
+            this.groupBoxOthers.Size = new System.Drawing.Size(376, 87);
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
@@ -397,7 +400,7 @@
             this.graph.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graph.Location = new System.Drawing.Point(3, 125);
             this.graph.Name = "graph";
-            this.graph.Size = new System.Drawing.Size(1420, 373);
+            this.graph.Size = new System.Drawing.Size(1486, 373);
             this.graph.TabIndex = 2;
             this.graph.TabStop = false;
             this.graph.Paint += new System.Windows.Forms.PaintEventHandler(this.Graph_Paint);
@@ -417,11 +420,25 @@
             this.openFileDialog1.Filter = "GraphML file|*.graphml";
             this.openFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
             // 
+            // matrixButton
+            // 
+            this.matrixButton.Location = new System.Drawing.Point(295, 16);
+            this.matrixButton.Name = "matrixButton";
+            this.matrixButton.Size = new System.Drawing.Size(75, 23);
+            this.matrixButton.TabIndex = 20;
+            this.matrixButton.Text = "Matrix";
+            this.matrixButton.UseVisualStyleBackColor = true;
+            this.matrixButton.Click += new System.EventHandler(this.MatrixButton_Click);
+            // 
+            // saveFileDialog2
+            // 
+            this.saveFileDialog2.Filter = "|.txt";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1426, 501);
+            this.ClientSize = new System.Drawing.Size(1492, 501);
             this.Controls.Add(this.tableLayoutMain);
             this.Name = "FormMain";
             this.Text = "Graphs";
@@ -474,6 +491,8 @@
         private System.Windows.Forms.Button loadGraphButton;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button clearGraphButton;
+        private System.Windows.Forms.Button matrixButton;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog2;
     }
 }
 
