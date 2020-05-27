@@ -101,12 +101,20 @@ namespace Graphs
             foreach (Edge edge in edges)
             {
                 edge.DrawEdge(e.Graphics, directed, canvasStartX, canvasStartY);
-                edge.DrawText(e.Graphics, canvasStartX, canvasStartY);
             }
 
             foreach (Node nodes in nodes)
             {
                 nodes.DrawNode(e.Graphics, canvasStartX, canvasStartY);
+            }
+
+            foreach (Edge edge in edges)
+            {
+                edge.DrawText(e.Graphics, canvasStartX, canvasStartY);
+            }
+
+            foreach (Node nodes in nodes)
+            {
                 nodes.DrawText(e.Graphics, canvasStartX, canvasStartY);
             }
         }
@@ -300,12 +308,23 @@ namespace Graphs
             {
                 foreach (Node node in nodes)
                 {
-                    if (node.Clicked(e.Location, canvasStartX, canvasStartY) && node != sinkNode)
+                    if (node.Clicked(e.Location, canvasStartX, canvasStartY))
                     {
-                        if(startingNode != null) startingNode.Color = nodeBaseColor;
-                        startingNode = node;
-                        node.Color = mediumHiglightColor;
-                        break;
+                        if (node != sinkNode)
+                        {
+                            if (startingNode != null) startingNode.Color = nodeBaseColor;
+                            startingNode = node;
+                            node.Color = mediumHiglightColor;
+                            break;
+                        }
+                        else
+                        {
+                            if (startingNode != null) startingNode.Color = nodeBaseColor;
+                            startingNode = node;
+                            sinkNode = null;
+                            node.Color = mediumHiglightColor;
+                            break;
+                        }
                     }
                 }
             }
@@ -373,31 +392,37 @@ namespace Graphs
                 if (algorithmSelectionSP.SelectedIndex == 0)
                 {
                     if (NoStart()) return;
+                    if (directed) directedCheckBox.Checked = false;
                     Dijkstra();
                 }
                 else if (algorithmSelectionMST.SelectedIndex == 0)
                 {
                     if (NoStart()) return;
+                    if (directed) directedCheckBox.Checked = false;
                     Jarnik();
                 }
                 else if (algorithmSelectionMST.SelectedIndex == 1)
                 {
                     Boruvka();
+                    if (directed) directedCheckBox.Checked = false;
                 }
                 else if (algorithmSelectionMST.SelectedIndex == 2)
                 {
                     Kruskal();
+                    if (directed) directedCheckBox.Checked = false;
                 }   
                 else if (algorithmSelectionMF.SelectedIndex == 0)
                 {
                     if (NoStart()) return;
                     if (NoSink()) return;
+                    if (!directed) directedCheckBox.Checked = true;
                     EdmondsKarp();
                 }
                 else if (algorithmSelectionMF.SelectedIndex == 1)
                 {
                     if (NoStart()) return;
                     if (NoSink()) return;
+                    if (!directed) directedCheckBox.Checked = true;
                     Dinic();
                 }
                     
@@ -1436,6 +1461,7 @@ namespace Graphs
             sinkNode = null;
             RefreshCanvas();
         }
+
         //Saves an adjacency matrix
         private void MatrixButton_Click(object sender, EventArgs e)
         {
@@ -1475,6 +1501,12 @@ namespace Graphs
                 }
                 writer.Close();
             }
+        }
+
+        //To easily swap value of an checkbox from settings form
+        public void Check()
+        {
+            directedCheckBox.Checked = !directedCheckBox.Checked;
         }
     }
 }

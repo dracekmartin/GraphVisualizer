@@ -119,8 +119,14 @@ namespace Graphs
             mainForm.Refresh();
         }
 
+        bool first = true;
         private void arrowUpDown_ValueChanged(object sender, EventArgs e)
         {
+            if (!first && mainForm.directed == false)
+            {
+                mainForm.Check();
+            }
+            first = false;
             int fn = (int)arrowUpDown.Value;
             mainForm.arrowsize = fn;
             foreach (Edge edge in mainForm.edges)
