@@ -32,8 +32,8 @@ namespace Graphs
             {0,0,0,7,0,0,23,0}
         };
         //Global properties
-        List<Node> nodes = new List<Node>();
-        List<Edge> edges = new List<Edge>();
+        public List<Node> nodes = new List<Node>();
+        public List<Edge> edges = new List<Edge>();
         Node startingNode = null;
         Node sinkNode = null;
         Step currentStep = null;
@@ -41,6 +41,10 @@ namespace Graphs
         public bool directed = false;
         public int canvasStartX = 0;
         public int canvasStartY = 0;
+        public int nodesize = 5;
+        public int edgesize = 5;
+        public int textsize = 12;
+        public float arrowsize = 5;
         //Global color properites
         public Color nodeBaseColor = Color.CadetBlue;
         public Color edgeBaseColor = Color.LightGray;
@@ -66,7 +70,7 @@ namespace Graphs
         {
             foreach (Point iterPoint in defaultNodePositions)
             {
-                nodes.Add(new Node(iterPoint, nodeBaseColor));
+                nodes.Add(new Node(iterPoint, nodeBaseColor, nodesize, textsize));
             }
             for (int i = 0; i < nodes.Count(); i++)
             {
@@ -74,7 +78,7 @@ namespace Graphs
                 {
                     if (defaultMatrix[i, k] > 0)
                     {
-                        Edge newEdge = new Edge(nodes[i], nodes[k], edgeBaseColor, textBaseColor, defaultMatrix[i, k]);
+                        Edge newEdge = new Edge(nodes[i], nodes[k], edgeBaseColor, textBaseColor, defaultMatrix[i, k], edgesize, textsize, arrowsize);
                         nodes[i].NodeEdges.Add(newEdge);
                         nodes[k].NodeEdges.Add(newEdge);
                         edges.Add(newEdge);
@@ -147,7 +151,7 @@ namespace Graphs
             {
                 if(e.Button == MouseButtons.Left)
                 {
-                    Node newNode = new Node(new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor);
+                    Node newNode = new Node(new Point(e.Location.X - canvasStartX, e.Location.Y - canvasStartY), nodeBaseColor, nodesize, textsize);
                     nodes.Add(newNode);
                 }
                 else if(e.Button == MouseButtons.Right)
@@ -223,14 +227,20 @@ namespace Graphs
                                 firstNodeOfNewEdge.Color = mediumHiglightColor;
                                 break;
                             }
-                            else if (node != firstNodeOfNewEdge)
+                            else if (node != firstNodeOfNewEdge && edgeValueInput.Text != "")
                             {
-                                Edge newEdge = new Edge(firstNodeOfNewEdge, node, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text));
+                                Edge newEdge = new Edge(firstNodeOfNewEdge, node, edgeBaseColor, textBaseColor, Int32.Parse(edgeValueInput.Text), edgesize, textsize, arrowsize);
                                 firstNodeOfNewEdge.NodeEdges.Add(newEdge);
                                 node.NodeEdges.Add(newEdge);
                                 edges.Add(newEdge);
                                 firstNodeOfNewEdge.Color = nodeBaseColor;
                                 firstNodeOfNewEdge = null;
+                                if (euclidean)
+                                {
+                                    newEdge.Euclidean = true;
+                                    newEdge.Text = newEdge.Value + "";
+                                }
+                                Refresh();
                             }
                             break;
                         }
@@ -420,6 +430,7 @@ namespace Graphs
                 clearGraphButton.Enabled = false;
                 loadGraphButton.Enabled = false;
                 saveGraphButton.Enabled = false;
+                matrixButton.Enabled = false;
 
                 t = new Timer();
                 t.Interval = waitTimeInput.Value;
@@ -455,6 +466,7 @@ namespace Graphs
                 clearGraphButton.Enabled = true;
                 loadGraphButton.Enabled = true;
                 saveGraphButton.Enabled = true;
+                matrixButton.Enabled = true;
             }
         }
 
@@ -468,7 +480,7 @@ namespace Graphs
             return false;
         }
 
-        private bool NoSink()   
+        private bool NoSink()
         {
             if (sinkNode == null)
             {
@@ -506,6 +518,10 @@ namespace Graphs
 
         private bool Connected()
         {
+            if(nodes.Count == 0)
+            {
+                return false;
+            }
             foreach(Node node in nodes)
             {
                 node.Visited = false;
@@ -805,9 +821,6 @@ namespace Graphs
                         edge.ResidualValue = edge.ResidualValue + improvement;
                         NewStep(new Step(edge, false, (edge.Value - edge.ResidualValue) + "/" + edge.Value));
                     }
-                }
-                foreach (Edge edge in improvementPath)
-                {
                     NewStep(new Step(edge, false, edgeBaseColor));
                 }
                 improvementPath = EKBFS();
@@ -892,7 +905,7 @@ namespace Graphs
 
 
 
-        //Dinic's algorithm WIP
+        //Dinic's algorithm
         private void Dinic()
         {
             foreach (Edge edge in edges)
@@ -1244,7 +1257,7 @@ namespace Graphs
             {
                 currentStep = currentStep.StepBefore;
                 currentStep.Complete();
-                if (currentStep.StepBefore.massStep == true && currentStep.massStep == true)
+                if (currentStep.StepBefore != null && currentStep.StepBefore.massStep == true && currentStep.massStep == true)
                 {
                     BackstepButton_Click(sender, e);
                     return;
@@ -1315,7 +1328,7 @@ namespace Graphs
             euclidean = !euclidean;
             foreach(Edge edge in edges)
             {
-                edge.Euclidean = !edge.Euclidean;
+                edge.Euclidean = euclidean;
                 edge.Text = edge.Value + "";
             }
             RefreshCanvas();
@@ -1400,11 +1413,11 @@ namespace Graphs
                 {
                     if(node.Name == "node")
                     {
-                        nodes.Add(new Node(new Point(int.Parse(node.ChildNodes[0].InnerText), -int.Parse(node.ChildNodes[1].InnerText)), nodeBaseColor));
+                        nodes.Add(new Node(new Point(int.Parse(node.ChildNodes[0].InnerText), -int.Parse(node.ChildNodes[1].InnerText)), nodeBaseColor, nodesize, textsize));
                     }
                     else if(node.Name == "edge")
                     {
-                        Edge newEdge = new Edge(nodes[int.Parse(node.Attributes["source"].Value)], nodes[int.Parse(node.Attributes["target"].Value)], edgeBaseColor, textBaseColor, int.Parse(node.ChildNodes[0].InnerText));
+                        Edge newEdge = new Edge(nodes[int.Parse(node.Attributes["source"].Value)], nodes[int.Parse(node.Attributes["target"].Value)], edgeBaseColor, textBaseColor, int.Parse(node.ChildNodes[0].InnerText), edgesize, textsize, arrowsize);
                         edges.Add(newEdge);
                         newEdge.Start.NodeEdges.Add(newEdge);
                         newEdge.End.NodeEdges.Add(newEdge);

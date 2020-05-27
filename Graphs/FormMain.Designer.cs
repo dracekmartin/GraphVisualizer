@@ -49,6 +49,7 @@
             this.startAlgButton = new System.Windows.Forms.Button();
             this.clickFunctionStartingNode = new System.Windows.Forms.ListBox();
             this.groupBoxOthers = new System.Windows.Forms.GroupBox();
+            this.matrixButton = new System.Windows.Forms.Button();
             this.clearGraphButton = new System.Windows.Forms.Button();
             this.saveGraphButton = new System.Windows.Forms.Button();
             this.directedCheckBox = new System.Windows.Forms.CheckBox();
@@ -58,7 +59,6 @@
             this.graph = new System.Windows.Forms.PictureBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.matrixButton = new System.Windows.Forms.Button();
             this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutMain.SuspendLayout();
             this.flowLayoutControls.SuspendLayout();
@@ -107,7 +107,7 @@
             this.groupBoxGraphCreation.Controls.Add(this.clickFunctionClick);
             this.groupBoxGraphCreation.Location = new System.Drawing.Point(3, 3);
             this.groupBoxGraphCreation.Name = "groupBoxGraphCreation";
-            this.groupBoxGraphCreation.Size = new System.Drawing.Size(443, 78);
+            this.groupBoxGraphCreation.Size = new System.Drawing.Size(445, 78);
             this.groupBoxGraphCreation.TabIndex = 4;
             this.groupBoxGraphCreation.TabStop = false;
             this.groupBoxGraphCreation.Text = "Graph creation";
@@ -144,7 +144,7 @@
             this.edgeValueInput.Location = new System.Drawing.Point(414, 28);
             this.edgeValueInput.Mask = "000";
             this.edgeValueInput.Name = "edgeValueInput";
-            this.edgeValueInput.Size = new System.Drawing.Size(23, 20);
+            this.edgeValueInput.Size = new System.Drawing.Size(25, 20);
             this.edgeValueInput.TabIndex = 4;
             this.edgeValueInput.Text = "10";
             this.edgeValueInput.ValidatingType = typeof(int);
@@ -178,7 +178,7 @@
             this.groupBoxAlg.Controls.Add(this.algorithmSelectionSP);
             this.groupBoxAlg.Controls.Add(this.startAlgButton);
             this.groupBoxAlg.Controls.Add(this.clickFunctionStartingNode);
-            this.groupBoxAlg.Location = new System.Drawing.Point(452, 3);
+            this.groupBoxAlg.Location = new System.Drawing.Point(454, 3);
             this.groupBoxAlg.Name = "groupBoxAlg";
             this.groupBoxAlg.Size = new System.Drawing.Size(635, 110);
             this.groupBoxAlg.TabIndex = 5;
@@ -326,12 +326,22 @@
             this.groupBoxOthers.Controls.Add(this.euclideanSpaceCheckBox);
             this.groupBoxOthers.Controls.Add(this.loadGraphButton);
             this.groupBoxOthers.Controls.Add(this.settingsButton);
-            this.groupBoxOthers.Location = new System.Drawing.Point(1093, 3);
+            this.groupBoxOthers.Location = new System.Drawing.Point(1095, 3);
             this.groupBoxOthers.Name = "groupBoxOthers";
             this.groupBoxOthers.Size = new System.Drawing.Size(376, 87);
             this.groupBoxOthers.TabIndex = 7;
             this.groupBoxOthers.TabStop = false;
             this.groupBoxOthers.Text = "Others";
+            // 
+            // matrixButton
+            // 
+            this.matrixButton.Location = new System.Drawing.Point(295, 16);
+            this.matrixButton.Name = "matrixButton";
+            this.matrixButton.Size = new System.Drawing.Size(75, 23);
+            this.matrixButton.TabIndex = 20;
+            this.matrixButton.Text = "Matrix";
+            this.matrixButton.UseVisualStyleBackColor = true;
+            this.matrixButton.Click += new System.EventHandler(this.MatrixButton_Click);
             // 
             // clearGraphButton
             // 
@@ -420,19 +430,9 @@
             this.openFileDialog1.Filter = "GraphML file|*.graphml";
             this.openFileDialog1.InitialDirectory = "c:\\Users\\mhuba\\Documents\\Graphs\\";
             // 
-            // matrixButton
-            // 
-            this.matrixButton.Location = new System.Drawing.Point(295, 16);
-            this.matrixButton.Name = "matrixButton";
-            this.matrixButton.Size = new System.Drawing.Size(75, 23);
-            this.matrixButton.TabIndex = 20;
-            this.matrixButton.Text = "Matrix";
-            this.matrixButton.UseVisualStyleBackColor = true;
-            this.matrixButton.Click += new System.EventHandler(this.MatrixButton_Click);
-            // 
             // saveFileDialog2
             // 
-            this.saveFileDialog2.Filter = "|.txt";
+            this.saveFileDialog2.Filter = "Text file|.txt";
             // 
             // FormMain
             // 

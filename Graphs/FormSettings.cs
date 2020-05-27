@@ -10,6 +10,10 @@ namespace Graphs
         {
             InitializeComponent();
             mainForm = form;
+            nodeUpDown.Value = mainForm.nodesize;
+            edgeUpDown.Value = mainForm.edgesize;
+            textUpDown.Value = mainForm.textsize;
+            arrowUpDown.Value = (decimal)mainForm.arrowsize;
         }
 
         private void FormSettings_FormClosed(object sender, FormClosedEventArgs e)
@@ -76,6 +80,54 @@ namespace Graphs
             cd.ShowDialog();
             mainForm.bigHiglightColor = cd.Color;
             mainForm.RecolorToBase();
+        }
+
+        private void textUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            int fn = (int)textUpDown.Value;
+            mainForm.textsize = fn;
+            foreach(Edge edge in mainForm.edges)
+            {
+                edge.TextSize = fn;
+            }
+            foreach (Node node in mainForm.nodes)
+            {
+                node.TextSize = fn;
+            }
+            mainForm.Refresh();
+        }
+
+        private void edgeUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            int fn = (int)edgeUpDown.Value;
+            mainForm.edgesize = fn;
+            foreach (Edge edge in mainForm.edges)
+            {
+                edge.Size = fn;
+            }
+            mainForm.Refresh();
+        }
+
+        private void nodeUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            int fn = (int)nodeUpDown.Value;
+            mainForm.nodesize = fn;
+            foreach (Node node in mainForm.nodes)
+            {
+                node.Size = fn;
+            }
+            mainForm.Refresh();
+        }
+
+        private void arrowUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            int fn = (int)arrowUpDown.Value;
+            mainForm.arrowsize = fn;
+            foreach (Edge edge in mainForm.edges)
+            {
+                edge.ArrowSize = fn;
+            }
+            mainForm.Refresh();
         }
     }
 }

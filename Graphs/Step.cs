@@ -8,7 +8,6 @@ namespace Graphs
         public Color Color;
         public string Text;
         public bool massStep;
-        
         public Step StepBefore;
         public Step StepAfter;
         public bool Reversed = false;

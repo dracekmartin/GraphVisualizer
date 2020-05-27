@@ -7,5 +7,7 @@ namespace Graphs
         public Color Color;
         public string Text;
         public Color TextColor;
+        public int Size;
+        public int TextSize;
     }
 }
